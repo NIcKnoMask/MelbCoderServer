@@ -2,14 +2,16 @@ package com.unimelbCoder.melbcode.bean;
 
 public class User {
     private int id;
+    private String username;
     private String password;
     private String email;
     private String role;
     private int age;
     private boolean state;
 
-    public User(int id, String password, String email, String role, int age, boolean state) {
+    public User(int id, String username, String password, String email, String role, int age, boolean state) {
         this.id = id;
+        this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
@@ -19,6 +21,10 @@ public class User {
 
     public int getId() {
         return id;
+    }
+
+    public String getUsername(){
+        return username;
     }
 
     public String getPassword() {
@@ -45,6 +51,10 @@ public class User {
         this.id = id;
     }
 
+    public void setUsername(String username){
+        this.username = username;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -69,6 +79,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", role='" + role + '\'' +

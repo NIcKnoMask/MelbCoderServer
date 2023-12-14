@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        "http//mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unimelbCoder.melbcode.dao.UserDao">
+    <select id="getUserByMessage" resultType="com.unimelbCoder.melbcode.bean.User">
+        SELECT * FROM users WHERE
+        username=#{username} AND password=#{password} AND state = 1
+    </select>
+    <select id="getUserByName" resultType="com.unimelbCoder.melbcode.bean.User">
+        SELECT * FROM users WHERE username=#{username}
+    </select>
+    <select id="createUser" resultType="com.unimelbCoder.melbcode.bean.User">
+        INSERT INTO users (id, username, password, email, role, age, state)
+        VALUES (00001, #{username}, #{password}, #{email}, #{role}, #{age}, 0);
+    </select>
+</mapper>
