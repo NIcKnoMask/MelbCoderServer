@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        "http//mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unimelbCoder.melbcode.dao.ArticleDao">
+    <select id="getArticleById" resultType="com.unimelbCoder.melbcode.bean.Article">
+        SELECT * FROM article WHERE id=#{id}
+    </select>
+    <select id="getArticleByCategory" resultType="com.unimelbCoder.melbcode.bean.Article">
+        SELECT * FROM article WHERE category_id=#{category_id}
+    </select>
+    <select id="getArticleByTitle" resultType="com.unimelbCoder.melbcode.bean.Article">
+        SELECT * FROM article WHERE title=#{title}
+    </select>
+    <select id="getArticleBySTitle" resultType="com.unimelbCoder.melbcode.bean.Article">
+        SELECT * FROM article WHERE short_title=#{short_title}
+    </select>
+    <insert id="createArticle" parameterType="com.unimelbCoder.melbcode.bean.Article">
+        INSERT INTO article (user_id, article_type, title, short_title, category_id, public_status, deleted)
+        VALUES (#{user_id}, #{article_type}, #{title}, #{short_title}, #{category_id}, 0, 0);
+    </insert>
+</mapper>

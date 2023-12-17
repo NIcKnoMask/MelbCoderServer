@@ -19,6 +19,10 @@ public class User {
         this.state = state;
     }
 
+    public User() {
+        System.out.println("No parameter constructor");
+    }
+
     public int getId() {
         return id;
     }

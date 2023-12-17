@@ -53,6 +53,7 @@ public class JwtUtils {
      */
     @SneakyThrows
     public <T> T getUserInfoFromToken(String token, Class<T> valueType) {
+      //需要类建立构造函数，无法默认调用构造函数
         Claims claims = getClaimsFromToken(token);
         return new ObjectMapper().readValue(claims.getSubject(), valueType);
     }
