@@ -6,6 +6,18 @@ spring:
     url: jdbc:mysql://localhost:3306/unimelbcoder?useUnicode=true&characterEncoding=utf8&SSL=false&serverTimezone=UTC
     username: root
     password: root666
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: rds123456
+      timeout: 3000
+      # 连接超时
+      connectTimeout: 5000
+
+jwt:
+  secret: qnAqsQa7600vrTBcr1WB8P8dg4cbgS5i8LZGjWnpREL
+  expiration: 30
 
 
 mybatis:
