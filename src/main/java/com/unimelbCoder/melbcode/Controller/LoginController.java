@@ -37,8 +37,7 @@ public class LoginController {
             flag = "ok";
             token = jwtUtils.generateToken(us);
             // set redis
-            redisTemplate.opsForValue().set(us.getUsername(), token);
-            redisTemplate.expire(us.getUsername(), 30, TimeUnit.MINUTES); // Set expiration time (adjust as needed)
+            redisTemplate.opsForValue().set(us.getUsername(), token, 10, TimeUnit.MINUTES);
         }
         res.put("flag", flag);
         res.put("data", token);

@@ -17,7 +17,7 @@ spring:
 
 jwt:
   secret: qnAqsQa7600vrTBcr1WB8P8dg4cbgS5i8LZGjWnpREL
-  expiration: 30
+  expiration: 86400
 
 
 mybatis:

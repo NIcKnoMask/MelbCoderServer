@@ -9,10 +9,9 @@ import com.unimelbCoder.melbcode.dao.UserDao;
 import com.unimelbCoder.melbcode.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -32,17 +31,20 @@ public class ArticleController {
     private RedisTemplate<String, String> redisTemplate;
 
     @RequestMapping("/createArticle")
-    public String createArticle(@RequestBody Map<String, Object> map) {
+    public String createArticle(@RequestBody Map<String, Object> map,
+                                @RequestHeader(name = "Authorization", required = false) String token) {
 
         //检查浏览器缓存不为空
-        LinkedHashMap<String, String> tokenMap = (LinkedHashMap<String, String>) map.get("username");
-        String token = tokenMap.get("token");
+//        LinkedHashMap<String, String> tokenMap = (LinkedHashMap<String, String>) map.get("username");
 
-        if (token == null) {
+
+        // 如果token是空的，或者token已经过期了，就重新login
+        if (token == null && jwtUtils.isTokenExpired(token)) {
             return "login";
         }
 
         User userInfo = jwtUtils.getUserInfoFromToken(token, User.class);
+        System.out.println(userInfo.toString());
 
         //再次检查Redis缓存用户信息
         String checkToken = redisTemplate.opsForValue().get(userInfo.getUsername());
