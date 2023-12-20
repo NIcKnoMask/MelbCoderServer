@@ -2,11 +2,9 @@ package com.unimelbCoder.melbcode.Controller;
 
 import com.alibaba.fastjson.JSON;
 import com.unimelbCoder.melbcode.bean.User;
-import com.unimelbCoder.melbcode.dao.UserDao;
+import com.unimelbCoder.melbcode.models.dao.UserDao;
 import com.unimelbCoder.melbcode.utils.JwtUtils;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,4 +41,5 @@ public class LoginController {
         res.put("data", token);
         return JSON.toJSONString(res);
     }
+
 }

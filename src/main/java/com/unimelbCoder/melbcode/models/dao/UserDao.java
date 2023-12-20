@@ -1,4 +1,4 @@
-package com.unimelbCoder.melbcode.dao;
+package com.unimelbCoder.melbcode.models.dao;
 
 import com.unimelbCoder.melbcode.bean.User;
 import org.apache.ibatis.annotations.Param;
@@ -12,4 +12,6 @@ public interface UserDao {
 
     public void createUser(@Param("username") String username, @Param("password") String password,
                            @Param("role") String role, @Param("email") String email, @Param("age") int age);
+
+    public User getUserByUsername(@Param("username") String username);
 }

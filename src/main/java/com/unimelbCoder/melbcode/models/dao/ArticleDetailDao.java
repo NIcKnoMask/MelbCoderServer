@@ -1,4 +1,4 @@
-package com.unimelbCoder.melbcode.dao;
+package com.unimelbCoder.melbcode.models.dao;
 
 import com.unimelbCoder.melbcode.bean.Article;
 import com.unimelbCoder.melbcode.bean.ArticleDetail;

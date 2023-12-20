@@ -3,16 +3,13 @@ package com.unimelbCoder.melbcode.Controller;
 import com.unimelbCoder.melbcode.bean.Article;
 import com.unimelbCoder.melbcode.bean.ArticleDetail;
 import com.unimelbCoder.melbcode.bean.User;
-import com.unimelbCoder.melbcode.dao.ArticleDao;
-import com.unimelbCoder.melbcode.dao.ArticleDetailDao;
-import com.unimelbCoder.melbcode.dao.UserDao;
+import com.unimelbCoder.melbcode.models.dao.ArticleDao;
+import com.unimelbCoder.melbcode.models.dao.ArticleDetailDao;
 import com.unimelbCoder.melbcode.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
