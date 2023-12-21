@@ -45,4 +45,9 @@ public class ActivityRankBo {
      * 关注增加活跃度
      */
     private Boolean follow;
+
+    /**
+     *  登录增加活跃度
+     */
+    private Boolean login;
 }

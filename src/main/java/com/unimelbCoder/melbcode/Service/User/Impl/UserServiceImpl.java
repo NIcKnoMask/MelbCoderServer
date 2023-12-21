@@ -5,8 +5,9 @@ import com.unimelbCoder.melbcode.bean.User;
 import com.unimelbCoder.melbcode.models.dao.UserDao;
 import com.unimelbCoder.melbcode.models.dto.SimpleUserInfoDTO;
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     @Resource

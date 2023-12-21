@@ -2,28 +2,23 @@ package com.unimelbCoder.melbcode.Service.Rank.Impl;
 
 import com.unimelbCoder.melbcode.Service.Rank.UserRankService;
 import com.unimelbCoder.melbcode.Service.Rank.model.ActivityRankBo;
+import com.unimelbCoder.melbcode.Service.User.Impl.UserServiceImpl;
 import com.unimelbCoder.melbcode.Service.User.UserService;
+import com.unimelbCoder.melbcode.cache.RedisClient;
 import com.unimelbCoder.melbcode.models.dao.UserDao;
 import com.unimelbCoder.melbcode.models.dto.RankItemDTO;
 import com.unimelbCoder.melbcode.models.enums.ActivityRankTimeEnum;
 import com.unimelbCoder.melbcode.utils.DateUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.util.CollectionUtils;
+import org.springframework.stereotype.Service;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+@Service
 public class UserRankServiceImpl implements UserRankService {
     private static final String ACTIVITY_SCORE_KEY = "activity_rank_";
 
@@ -34,11 +29,11 @@ public class UserRankServiceImpl implements UserRankService {
     @Autowired
     private UserDao userDao;
 
-    @Autowired
-    private UserService userService;
+    private UserServiceImpl userService = new UserServiceImpl();
 
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+//    @Autowired
+//    private RedisTemplate<String, String> redisTemplate;
+
 
     /**
      * 当天活跃度排行榜
@@ -74,20 +69,68 @@ public class UserRankServiceImpl implements UserRankService {
 
     @Override
     public void addActivityScore(String username, ActivityRankBo activityScore){
+        System.out.println();
+
+        if(username == null){
+            return;
+        }
+
+        String field;
+        int score = 0;
+        if (activityScore.getPath() != null) {
+            field = "path_" + activityScore.getPath();
+            score = 1;
+        } else if (activityScore.getArticleId() != null) {
+            field = activityScore.getArticleId() + "_";
+            if (activityScore.getPraise() != null) {
+                field += "praise";
+                score = BooleanUtils.isTrue(activityScore.getPraise()) ? 2 : -2;
+            } else if (activityScore.getCollect() != null) {
+                field += "collect";
+                score = BooleanUtils.isTrue(activityScore.getCollect()) ? 2 : -2;
+            } else if (activityScore.getRate() != null) {
+                // 评论回复
+                field += "rate";
+                score = BooleanUtils.isTrue(activityScore.getRate()) ? 3 : -3;
+            } else if (BooleanUtils.isTrue(activityScore.getPublishArticle())) {
+                // 发布文章
+                field += "publish";
+                score += 10;
+            }
+        } else if (activityScore.getFollowedUserId() != null) {
+            field = activityScore.getFollowedUserId() + "_follow";
+            score = BooleanUtils.isTrue(activityScore.getFollow()) ? 2 : -2;
+        }  else if (activityScore.getLogin() != null){
+            field = activityScore.getFollowedUserId() + "_login";
+            score += 2;
+        } else {
+            return;
+        }
+
+        final String userActionKey = ACTIVITY_SCORE_KEY + username + DateUtils.format(DateTimeFormatter.ofPattern("yyyyMMdd"), System.currentTimeMillis());
+
+        if(RedisClient.isMemberExists(userActionKey, username)){
+            if(score > 0){
+                RedisClient.modifyScore(userActionKey, username, score);
+            }
+        }else{
+            System.out.println("successfully add the user to the rank list");
+            RedisClient.addToSortedSet(userActionKey, username, score);
+        }
 
     }
 
     @Override
     public RankItemDTO queryRankInfo(String username, ActivityRankTimeEnum time) {
         RankItemDTO item = new RankItemDTO();
-        item.setUser(userService.queryUserInfo(username));
-        String rankKey = time == ActivityRankTimeEnum.DAY ? todayRankKey() : monthRankKey();
-        double score = redisTemplate.execute(new RedisCallback<Double>() {
-            @Override
-            public Double doInRedis(RedisConnection connection) throws DataAccessException {
-                return connection.zScore(keyBytes(rankKey), keyBytes(username));
-            }
-        });
+//        item.setUser(userService.queryUserInfo(username));
+//        String rankKey = time == ActivityRankTimeEnum.DAY ? todayRankKey() : monthRankKey();
+//        double score = redisTemplate.execute(new RedisCallback<Double>() {
+//            @Override
+//            public Double doInRedis(RedisConnection connection) throws DataAccessException {
+//                return connection.z;
+//            }
+//        });
 
 //        ImmutablePair<Integer, Double> rank = redisTemplate.zRankInfo(rankKey, String.valueOf(userId));
 //        item.setRank(rank.getLeft());

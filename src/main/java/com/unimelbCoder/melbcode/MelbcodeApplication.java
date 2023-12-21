@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
 
-@MapperScan("com.unimelbCoder.melbcode.dao")
+@MapperScan("com.unimelbCoder.melbcode.models.dao")
 @SpringBootApplication
 @EnableCaching
 public class MelbcodeApplication {

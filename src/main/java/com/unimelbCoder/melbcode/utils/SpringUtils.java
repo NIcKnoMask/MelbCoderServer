@@ -1,16 +1,20 @@
 package com.unimelbCoder.melbcode.utils;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.EnvironmentAware;
+import org.springframework.context.*;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SpringUtils implements ApplicationContextAware, EnvironmentAware {
+    @Autowired
     private volatile static ApplicationContext context;
     private volatile static Environment environment;
+
+    @Autowired
+    private volatile static ApplicationEventPublisher applicationEventPublisher;
 
     private static Binder binder;
 
