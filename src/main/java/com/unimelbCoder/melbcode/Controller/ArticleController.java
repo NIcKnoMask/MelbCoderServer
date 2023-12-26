@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.unimelbCoder.melbcode.bean.Article;
 import com.unimelbCoder.melbcode.bean.ArticleDetail;
 import com.unimelbCoder.melbcode.bean.User;
+import com.unimelbCoder.melbcode.cache.RedisClient;
 import com.unimelbCoder.melbcode.models.dao.ArticleDao;
 import com.unimelbCoder.melbcode.models.dao.ArticleDetailDao;
 import com.unimelbCoder.melbcode.utils.JwtUtils;
@@ -34,9 +35,6 @@ public class ArticleController {
                                 @RequestHeader(name = "Authorization", required = false) String token) {
 
         //检查浏览器缓存不为空
-//        LinkedHashMap<String, String> tokenMap = (LinkedHashMap<String, String>) map.get("username");
-
-
         // 如果token是空的，或者token已经过期了，就重新login
         if (token == null && jwtUtils.isTokenExpired(token)) {
             return "login";
@@ -46,9 +44,7 @@ public class ArticleController {
         System.out.println(userInfo.toString());
 
         //再次检查Redis缓存用户信息
-        String checkToken = redisTemplate.opsForValue().get(userInfo.getUsername());
-
-        if (checkToken == null) {
+        if (!(RedisClient.isUserLogin(userInfo.getUsername()))) {
             return "login";
         }
 
@@ -102,9 +98,7 @@ public class ArticleController {
         User userInfo = jwtUtils.getUserInfoFromToken(token, User.class);
 
         //再次检查Redis缓存用户信息
-        String checkToken = redisTemplate.opsForValue().get(userInfo.getUsername());
-
-        if (checkToken == null) {
+        if (!(RedisClient.isUserLogin(userInfo.getUsername()))) {
             return "login";
         }
 

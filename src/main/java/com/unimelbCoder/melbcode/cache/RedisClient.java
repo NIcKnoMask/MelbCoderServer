@@ -77,4 +77,15 @@ public class RedisClient{
         Double score = zSetOps.score(key, member);
         return score != null;
     }
+
+    /**
+     * 通过用户名检查redis缓存是否存在
+     * @param username
+     * @return
+     */
+    public static boolean isUserLogin(String username) {
+        String checkToken = template.opsForValue().get(username);
+
+        return checkToken != null;
+    }
 }
