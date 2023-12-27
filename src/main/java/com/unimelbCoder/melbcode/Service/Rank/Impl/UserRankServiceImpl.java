@@ -7,16 +7,20 @@ import com.unimelbCoder.melbcode.Service.User.UserService;
 import com.unimelbCoder.melbcode.cache.RedisClient;
 import com.unimelbCoder.melbcode.models.dao.UserDao;
 import com.unimelbCoder.melbcode.models.dto.RankItemDTO;
+import com.unimelbCoder.melbcode.models.dto.SimpleUserInfoDTO;
 import com.unimelbCoder.melbcode.models.enums.ActivityRankTimeEnum;
 import com.unimelbCoder.melbcode.utils.DateUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 public class UserRankServiceImpl implements UserRankService {
@@ -29,7 +33,8 @@ public class UserRankServiceImpl implements UserRankService {
     @Autowired
     private UserDao userDao;
 
-    private UserServiceImpl userService = new UserServiceImpl();
+    @Autowired
+    private UserServiceImpl userService;
 
 //    @Autowired
 //    private RedisTemplate<String, String> redisTemplate;
@@ -107,7 +112,7 @@ public class UserRankServiceImpl implements UserRankService {
             return;
         }
 
-        final String userActionKey = ACTIVITY_SCORE_KEY + username + DateUtils.format(DateTimeFormatter.ofPattern("yyyyMMdd"), System.currentTimeMillis());
+        final String userActionKey = ACTIVITY_SCORE_KEY + DateUtils.format(DateTimeFormatter.ofPattern("yyyyMMdd"), System.currentTimeMillis());
 
         if(RedisClient.isMemberExists(userActionKey, username)){
             if(score > 0){
@@ -120,28 +125,35 @@ public class UserRankServiceImpl implements UserRankService {
 
     }
 
-    @Override
-    public RankItemDTO queryRankInfo(String username, ActivityRankTimeEnum time) {
-        RankItemDTO item = new RankItemDTO();
+//    @Override
+//    public RankItemDTO queryRankInfo(String username, ActivityRankTimeEnum time, Integer rank, Integer score) {
+//        RankItemDTO item = new RankItemDTO();
 //        item.setUser(userService.queryUserInfo(username));
 //        String rankKey = time == ActivityRankTimeEnum.DAY ? todayRankKey() : monthRankKey();
-//        double score = redisTemplate.execute(new RedisCallback<Double>() {
-//            @Override
-//            public Double doInRedis(RedisConnection connection) throws DataAccessException {
-//                return connection.z;
-//            }
-//        });
-
+//        double score =
+//
 //        ImmutablePair<Integer, Double> rank = redisTemplate.zRankInfo(rankKey, String.valueOf(userId));
 //        item.setRank(rank.getLeft());
 //        item.setScore(rank.getRight().intValue());
-
-        return item;
-    }
-
-//    @Override
-//    public List<RankItemDTO> queryRankList(ActivityRankTimeEnum time, int size) {
+//
+//        return item;
 //    }
+
+    @Override
+    public List<RankItemDTO> queryRankList(ActivityRankTimeEnum time, int size) {
+        List<RankItemDTO> rankList = new LinkedList<>();
+        String rankKey = time == ActivityRankTimeEnum.DAY ? todayRankKey() : monthRankKey();
+        // 此处是返回所有的排行，不是按照size。
+        Set<TypedTuple<String>> sortedMembers = RedisClient.getSortedSetMembers(rankKey, 0, -1);
+        int i = 0;
+        for(TypedTuple<String> tuple: sortedMembers){
+            String member = tuple.getValue();
+            Double score = tuple.getScore();
+            SimpleUserInfoDTO spu = userService.queryUserInfo(member);
+            rankList.add(new RankItemDTO().setUser(spu).setRank(i).setScore(score.intValue()));
+        }
+        return rankList;
+    }
 
 
 }

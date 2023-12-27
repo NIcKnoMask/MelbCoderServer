@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -52,26 +53,21 @@ public class RedisClient{
      * @param score 每个用户对应的得分
      */
     public static void addToSortedSet(String key, String member, double score) {
-        System.out.println("invoke zset add function");
-        System.out.println(template);
         ZSetOperations<String, String> zSetOps = template.opsForZSet();
         zSetOps.add(key, member, score);
     }
 
-    public static Set<String> getSortedSetMembers(String key, long start, long end) {
+    public static Set<TypedTuple<String>> getSortedSetMembers(String key, long start, long end) {
         ZSetOperations<String, String> zSetOps = template.opsForZSet();
-        return zSetOps.range(key, start, end);
+        return zSetOps.rangeWithScores(key, start, end);
     }
 
     public static void modifyScore(String key, String member, double scoreDelta) {
-        System.out.println(template);
-
         ZSetOperations<String, String> zSetOps = template.opsForZSet();
         zSetOps.incrementScore(key, member, scoreDelta);
     }
 
     public static boolean isMemberExists(String key, String member) {
-        System.out.println(template);
         ZSetOperations<String, String> zSetOps = template.opsForZSet();
         // Check if the member exists in the sorted set
         Double score = zSetOps.score(key, member);

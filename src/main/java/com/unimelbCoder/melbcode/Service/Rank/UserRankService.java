@@ -15,20 +15,20 @@ public interface UserRankService {
      */
     void addActivityScore(String username, ActivityRankBo activityScore);
 
-    /**
-     * 查询用户的活跃信息
-     *
-     * @param username
-     * @param time
-     * @return
-     */
-    RankItemDTO queryRankInfo(String username, ActivityRankTimeEnum time);
-
 //    /**
-//     * 查询活跃度排行榜
+//     * 查询用户的活跃信息
 //     *
+//     * @param username
 //     * @param time
 //     * @return
 //     */
-//    List<RankItemDTO> queryRankList(ActivityRankTimeEnum time, int size);
+//    RankItemDTO queryRankInfo(String username, ActivityRankTimeEnum time);
+
+    /**
+     * 查询活跃度排行榜
+     *
+     * @param time
+     * @return
+     */
+    List<RankItemDTO> queryRankList(ActivityRankTimeEnum time, int size);
 }

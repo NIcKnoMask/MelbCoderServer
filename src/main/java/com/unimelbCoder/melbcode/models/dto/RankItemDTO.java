@@ -1,7 +1,6 @@
 package com.unimelbCoder.melbcode.models.dto;
 
 
-import com.unimelbCoder.melbcode.models.dao.UserDao;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
