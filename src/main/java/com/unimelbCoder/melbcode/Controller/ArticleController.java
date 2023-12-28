@@ -7,7 +7,10 @@ import com.unimelbCoder.melbcode.bean.User;
 import com.unimelbCoder.melbcode.cache.RedisClient;
 import com.unimelbCoder.melbcode.models.dao.ArticleDao;
 import com.unimelbCoder.melbcode.models.dao.ArticleDetailDao;
+import com.unimelbCoder.melbcode.models.enums.NotifyTypeEnum;
 import com.unimelbCoder.melbcode.utils.JwtUtils;
+import com.unimelbCoder.melbcode.utils.NotifyMsgEvent;
+import com.unimelbCoder.melbcode.utils.SpringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -83,6 +86,9 @@ public class ArticleController {
             redisTemplate.opsForHash().delete(key, articleCache.keySet());
         }
 
+        //活跃度事件发布
+        processAfterCreateArticle(userInfo.getUsername());
+
         return "ok";
     }
 
@@ -150,6 +156,10 @@ public class ArticleController {
         }
 
         return JSON.toJSONString(res);
+    }
+
+    private void processAfterCreateArticle(String username) {
+        SpringUtils.publishEvent(new NotifyMsgEvent<>(this, NotifyTypeEnum.CREATE_ARTICLE, username));
     }
 
 }
