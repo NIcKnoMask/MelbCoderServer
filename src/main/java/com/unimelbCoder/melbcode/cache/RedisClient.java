@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -83,5 +84,17 @@ public class RedisClient{
         String checkToken = template.opsForValue().get(username);
 
         return checkToken != null;
+    }
+
+    /**
+     * 用户的未读消息
+     */
+    public static void addMessage(String key, String message){
+        template.opsForList().rightPush(key, message);
+    }
+
+    public static List<String> getMessages(String key) {
+        // LRANGE to retrieve all messages from the list
+        return template.opsForList().range(key, 0, -1);
     }
 }
