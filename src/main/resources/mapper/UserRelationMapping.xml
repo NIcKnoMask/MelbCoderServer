@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        "http//mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unimelbCoder.melbcode.models.dao.UserRelationDao">
+    <insert id="followUser" parameterType="com.unimelbCoder.melbcode.models.dto.UserRelationDTO">
+        INSERT INTO usrelation (mainUserName, followUsername, followState)
+        VALUES (#{mainUserName}, #{followUsername}, 1)
+    </insert>
+
+    <update id="unFollowUser">
+        UPDATE usrelation  SET followState=2
+        WHERE mainUser=#{mainUser} AND followUsername=#{followUsername}
+    </update>
+
+    <update id="updateFollow">
+        UPDATE usrelation  SET followState=1
+        WHERE mainUser=#{mainUser} AND followUsername=#{followUsername}
+    </update>
+
+    <select id="listUserFollows">
+        SELECT * FROM usrelation WHERE
+        mainUser=#{mainUser} AND followState=1
+    </select>
+
+    <select id="queryUserFans" >
+        SELECT * FROM usrelation WHERE
+        followUsername=#{followUsername} AND followState=1
+    </select>
+</mapper>

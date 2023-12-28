@@ -8,7 +8,18 @@ import lombok.experimental.Accessors;
 public class SimpleUserInfoDTO {
     private static final long serialVersionUID = 4802653694786272120L;
 
+    /**
+     * 用户名
+     */
     private String username;
+
+    /**
+     * 年龄
+     */
     private int age;
+
+    /**
+     * 角色
+     */
     private String role;
 }
