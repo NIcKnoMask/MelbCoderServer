@@ -52,6 +52,10 @@ public class UserActivityListener {
 //                relation = (UserRelationDO) msgEvent.getContent();
 //                userActivityRankService.addActivityScore(ReqInfoContext.getReqInfo().getUserId(), new ActivityScoreBo().setFollow(false).setArticleId(relation.getUserId()));
 //                break;
+            case CREATE_ARTICLE:
+                System.out.println(msgEvent.getContent().toString());
+                userActivityRankService.addActivityScore(msgEvent.getContent().toString(),
+                        new ActivityRankBo().setPublishArticle(true));
             case LOGIN:
                 System.out.println(msgEvent.getContent().toString());
                 userActivityRankService.addActivityScore(msgEvent.getContent().toString(),

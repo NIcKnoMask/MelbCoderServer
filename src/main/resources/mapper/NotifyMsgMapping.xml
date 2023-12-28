@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        "http//mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unimelbCoder.melbcode.models.dao.UserDao">
+    <select id="getNotifyMsgByRelatedIdAndType" resultType="com.unimelbCoder.melbcode.bean.NotifyMsg">
+        SELECT * FROM notify_msg WHERE
+        notify_user_id=#{notifyUserId} AND operate_user_id=#{operateUserId} AND type=#{type} AND related_id=#{relatedId}
+    </select>
+    <select id="getNotifyMsgByIdx" resultType="com.unimelbCoder.melbcode.bean.NotifyMsg">
+        SELECT * FROM notify_msg WHERE notify_user_id=#{notifyUserId} AND type=#{type} AND state=#{state}
+    </select>
+    <select id="countByUserIdAndStat" resultType="Integer">
+        SELECT COUNT(id) FROM notify_msg WHERE notify_user_id=#{notifyUserId} AND AND state=#{state}
+    </select>
+    <insert id="createNotifyMsg" parameterType="com.unimelbCoder.melbcode.bean.NotifyMsg">
+        INSERT INTO notify_msg (related_id, notify_user_id, operate_user_id, msg, type, state)
+        VALUES (#{relatedId}, #{notifyUserId}, #{operateUserId}, #{msg}, #{type}, 0);
+    </insert>
+</mapper>
