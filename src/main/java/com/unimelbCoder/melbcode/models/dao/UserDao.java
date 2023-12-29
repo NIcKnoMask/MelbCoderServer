@@ -14,4 +14,6 @@ public interface UserDao {
                            @Param("role") String role, @Param("email") String email, @Param("age") int age);
 
     public User getUserByUsername(@Param("username") String username);
+
+    public User getUserById(@Param("id") Integer id);
 }
