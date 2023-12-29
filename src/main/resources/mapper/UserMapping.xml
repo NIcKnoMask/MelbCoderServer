@@ -9,6 +9,9 @@
     <select id="getUserByName" resultType="com.unimelbCoder.melbcode.bean.User">
         SELECT * FROM users WHERE username=#{username}
     </select>
+    <select id="getUserById" resultType="com.unimelbCoder.melbcode.bean.User">
+        SELECT * FROM users WHERE id=#{id};
+    </select>
     <insert id="createUser" parameterType="com.unimelbCoder.melbcode.bean.User">
         INSERT INTO users (id, username, password, email, role, age, state)
         VALUES (00001, #{username}, #{password}, #{email}, #{role}, #{age}, 0);
