@@ -65,8 +65,14 @@ public class MessageController {
         String flag = "error";
         List<String> msg = RedisClient.getMessages(username);
         res.put("flag", flag);
-        res.put("data", msg);
+
+        //删除redis中的缓存
+        if(msg != null && msg.size() > 0){
+            RedisClient.delByKey("MSG_" + username);
+            res.put("data", msg); //在返回体中添加结果
+        }
 
         return JSON.toJSONString(res);
     }
+
 }

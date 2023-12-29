@@ -1,5 +1,7 @@
 package com.unimelbCoder.melbcode.cache;
 
+import com.unimelbCoder.melbcode.bean.User;
+import com.unimelbCoder.melbcode.utils.JwtUtils;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisCallback;
@@ -43,8 +45,8 @@ public class RedisClient{
     }
 
 
-    public static void del(String key) {
-        template.execute((RedisCallback<Long>) con -> con.del(keyBytes(key)));
+    public static void delByKey(String key) {
+        template.delete(key);
     }
 
     /**
