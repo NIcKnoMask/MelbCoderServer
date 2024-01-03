@@ -83,11 +83,11 @@ public class ArticleController {
         articleDetailDao.createArticleDetail(curArticle.getId(), 0, (String) map.get("content"));
         System.out.println("successfully insert the article detail row");
 
-        //Redis逻辑需要抽象
+        // Redis逻辑需要抽象
         String key = "unimelb:article:create:" + userInfo.getId();
         Map<Object, Object> articleCache = redisTemplate.opsForHash().entries(key);
         if (!(articleCache.isEmpty())) {
-            redisTemplate.opsForHash().delete(key, articleCache.keySet());
+            redisTemplate.delete(key);
         }
 
         //活跃度事件发布
@@ -160,7 +160,7 @@ public class ArticleController {
         /**
          * 这段代码后需要修改，按照热度等排序，暂时硬编码
          */
-        for (int i = 11; i < 14; i++) {
+        for (int i = 1; i < 4; i++) {
             Article article = articleDao.getArticleById(i);
             User user = userDao.getUserById(article.getUser_id());
             System.out.println("user: " + user);
