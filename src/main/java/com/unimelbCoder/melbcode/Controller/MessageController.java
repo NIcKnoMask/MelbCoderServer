@@ -31,7 +31,7 @@ public class MessageController {
     @PostMapping("/sendToUser")
     @ResponseBody
     public String chat(@RequestBody MessageItemDTO request) {
-        //消息接收者
+       //消息接收者
         String receiver = request.getReceiver();
         //消息内容
         String msg = request.getContent();

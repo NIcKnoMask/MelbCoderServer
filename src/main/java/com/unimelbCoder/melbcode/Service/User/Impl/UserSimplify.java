@@ -13,6 +13,7 @@ public class UserSimplify {
     public static SimpleUserInfoDTO toSimpleUserInfo(User user){
         return new SimpleUserInfoDTO().setUsername(user.getUsername())
                 .setAge(user.getAge())
-                .setRole(user.getRole());
+                .setRole(user.getRole())
+                .setIntroduction(user.getIntroduction());
     }
 }

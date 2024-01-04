@@ -108,7 +108,7 @@ public class ArticleController {
             return "login";
         }
 
-        map.put("username", Integer.toString(userInfo.getId()));
+        map.put("username", userInfo.getId());
 
         Article article = articleDao.getArticleByTitle((String) map.get("title"));
 

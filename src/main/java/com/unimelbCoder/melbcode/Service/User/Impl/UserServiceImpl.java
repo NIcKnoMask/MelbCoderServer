@@ -15,7 +15,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public SimpleUserInfoDTO queryUserInfo(String username){
-        User userInfo = userDao.getUserByUsername(username);
+        User userInfo = userDao.getUserByName(username);
         return UserSimplify.toSimpleUserInfo(userInfo);
     }
 }

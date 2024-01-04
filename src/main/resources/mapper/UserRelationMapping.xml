@@ -3,27 +3,32 @@
         "http//mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.unimelbCoder.melbcode.models.dao.UserRelationDao">
     <insert id="followUser" parameterType="com.unimelbCoder.melbcode.models.dto.UserRelationDTO">
-        INSERT INTO usrelation (mainUserName, followUsername, followState)
-        VALUES (#{mainUserName}, #{followUsername}, 1)
+        INSERT INTO user_relation (mainUserName, followUserId, followState)
+        VALUES (#{mainUserName}, #{followUserId}, 1)
     </insert>
 
     <update id="unFollowUser">
-        UPDATE usrelation  SET followState=2
-        WHERE mainUser=#{mainUser} AND followUsername=#{followUsername}
+        UPDATE user_relation  SET followState=2
+        WHERE mainUser=#{mainUser} AND followUserId=#{followUserId}
     </update>
 
     <update id="updateFollow">
-        UPDATE usrelation  SET followState=1
-        WHERE mainUser=#{mainUser} AND followUsername=#{followUsername}
+        UPDATE user_relation  SET followState=1
+        WHERE mainUser=#{mainUser} AND followUserId=#{followUserId}
     </update>
 
     <select id="listUserFollows">
-        SELECT * FROM usrelation WHERE
+        SELECT * FROM user_relation WHERE
         mainUser=#{mainUser} AND followState=1
     </select>
 
     <select id="queryUserFans" >
-        SELECT * FROM usrelation WHERE
-        followUsername=#{followUsername} AND followState=1
+        SELECT * FROM user_relation WHERE
+        followUserId=#{followUserId} AND followState=1
+    </select>
+
+    <select id="hasRelation" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM user_relation WHERE
+        mainUser=#{mainUser} AND followUserId=#{followUserId}
     </select>
 </mapper>

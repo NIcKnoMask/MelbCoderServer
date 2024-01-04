@@ -22,4 +22,9 @@ public class SimpleUserInfoDTO {
      * 角色
      */
     private String role;
+
+    /**
+     * 个人简介
+     */
+    private String introduction;
 }

@@ -73,10 +73,10 @@ public class UserRankServiceImpl implements UserRankService {
     }
 
     @Override
-    public void addActivityScore(String username, ActivityRankBo activityScore){
+    public void addActivityScore(String userId, ActivityRankBo activityScore){
         System.out.println();
 
-        if(username == null){
+        if(userId == null){
             return;
         }
 
@@ -114,13 +114,13 @@ public class UserRankServiceImpl implements UserRankService {
 
         final String userActionKey = ACTIVITY_SCORE_KEY + DateUtils.format(DateTimeFormatter.ofPattern("yyyyMMdd"), System.currentTimeMillis());
 
-        if(RedisClient.isMemberExists(userActionKey, username)){
+        if(RedisClient.isMemberExists(userActionKey, userId)){
             if(score > 0){
-                RedisClient.modifyScore(userActionKey, username, score);
+                RedisClient.modifyScore(userActionKey, userId, score);
             }
         }else{
             System.out.println("successfully add the user to the rank list");
-            RedisClient.addToSortedSet(userActionKey, username, score);
+            RedisClient.addToSortedSet(userActionKey, userId, score);
         }
 
     }

@@ -8,15 +8,15 @@ import java.util.List;
 
 @Repository
 public interface UserRelationDao {
-    public void followUser(@Param("mainUser") String mainUser, @Param("followUsername") String followUsername);
+    public void followUser(@Param("mainUser") String mainUser, @Param("followUserId") String followUserId);
 
-    public void unFollowUser(@Param("mainUser") String mainUser, @Param("followUsername") String followUsername);
+    public void unFollowUser(@Param("mainUser") String mainUser, @Param("followUserId") String followUserId);
 
-    public void updateFollow(@Param("mainUser") String mainUser, @Param("followUsername") String followUsername);
+    public void updateFollow(@Param("mainUser") String mainUser, @Param("followUserId") String followUserId);
 
-    public boolean hasUser(@Param("mainUser") String mainUser, @Param("followUsername") String followUser);
+    public boolean hasRelation(@Param("mainUser") String mainUser, @Param("followUserId") String followUserId);
 
     public List<UserRelationDTO> listUserFollows(@Param("mainUser") String mainUser);
 
-    public List<UserRelationDTO> queryUserFans(@Param("followUser") String followUser);
+    public List<UserRelationDTO> queryUserFans(@Param("followUserId") String followUserId);
 }

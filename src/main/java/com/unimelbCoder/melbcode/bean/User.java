@@ -1,29 +1,29 @@
 package com.unimelbCoder.melbcode.bean;
 
 public class User {
-    private int id;
+    private String id;
     private String username;
     private String password;
     private String email;
     private String role;
     private int age;
-    private boolean state;
+    private String introduction;
 
-    public User(int id, String username, String password, String email, String role, int age, boolean state) {
+    public User(String id, String username, String password, String email, String role, int age, String introduction) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
         this.age = age;
-        this.state = state;
+        this.introduction = introduction;
     }
 
     public User() {
         System.out.println("No parameter constructor");
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -47,11 +47,11 @@ public class User {
         return age;
     }
 
-    public boolean isState() {
-        return state;
+    public String getIntroduction() {
+        return introduction;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -75,8 +75,8 @@ public class User {
         this.age = age;
     }
 
-    public void setState(boolean state) {
-        this.state = state;
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", role='" + role + '\'' +
                 ", age=" + age +
-                ", state=" + state +
+                ", introduction=" + introduction +
                 '}';
     }
 }

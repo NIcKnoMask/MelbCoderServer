@@ -14,7 +14,7 @@ public interface ArticleDao {
 
     public Article getArticleBySTitle(@Param("short_title") String short_title);
 
-    public void createArticle(@Param("user_id") int user_id, @Param("article_type") int article_type,
+    public void createArticle(@Param("user_id") String user_id, @Param("article_type") int article_type,
                               @Param("title") String title, @Param("short_title") String short_title,
                               @Param("category_id") int category_id);
 }

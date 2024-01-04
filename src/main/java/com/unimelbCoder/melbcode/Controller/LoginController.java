@@ -38,18 +38,20 @@ public class LoginController {
         if(us != null){
             flag = "ok";
             token = jwtUtils.generateToken(us);
+
             // set redis
             System.out.println(redisTemplate);
             redisTemplate.opsForValue().set(us.getUsername(), token, 10, TimeUnit.MINUTES);
+            res.put("un", us.getId());
+            res.put("data", token);
+            processAfterLogin(us.getId());
         }
         res.put("flag", flag);
-        res.put("data", token);
-        processAfterLogin(us.getUsername());
         return JSON.toJSONString(res);
     }
 
-    private void processAfterLogin(String username){
-        SpringUtils.publishEvent(new NotifyMsgEvent<>(this, NotifyTypeEnum.LOGIN, username));
+    private void processAfterLogin(String userId){
+        SpringUtils.publishEvent(new NotifyMsgEvent<>(this, NotifyTypeEnum.LOGIN, userId));
     }
 
 }
