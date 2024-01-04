@@ -7,7 +7,7 @@
         notify_user_id=#{notifyUserId} AND operate_user_id=#{operateUserId} AND type=#{type} AND related_id=#{relatedId}
     </select>
     <select id="getNotifyMsgByIdx" resultType="com.unimelbCoder.melbcode.bean.NotifyMsg">
-        SELECT * FROM notify_msg WHERE notify_user_id=#{notifyUserId} AND type=#{type} AND state=#{state}
+        SELECT * FROM notify_msg WHERE notify_user_id=#{notify_user_id} AND type=#{type} AND state=#{state}
     </select>
     <select id="countByUserIdAndStat" resultType="Integer">
         SELECT COUNT(id) FROM notify_msg WHERE notify_user_id=#{notifyUserId} AND AND state=#{state}

@@ -8,5 +8,8 @@ public class CommonConstants {
     public static String EXCHANGE_NAME_DIRECT = "direct.exchange";
     public static String QUEUE_KEY_PRAISE  = "praise";
     public static String QUEUE_NAME_PRAISE = "queue.praise";
+    public static String UNIMELB_CODER = "unimelb";
+    public static String ARTICLE = ":article:";
+    public static String LOCK = "lock:";
 
 }
