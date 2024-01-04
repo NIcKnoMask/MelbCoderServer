@@ -1,22 +1,29 @@
 package com.unimelbCoder.melbcode.Service.Rabbitmq.Impl;
 
+import com.alibaba.fastjson.JSON;
 import com.rabbitmq.client.*;
 import com.unimelbCoder.melbcode.Service.Rabbitmq.RabbitmqConnection;
 import com.unimelbCoder.melbcode.Service.Rabbitmq.RabbitmqConnectionPool;
 import com.unimelbCoder.melbcode.Service.Rabbitmq.RabbitmqService;
+import com.unimelbCoder.melbcode.models.dao.NotifyMsgDao;
 import com.unimelbCoder.melbcode.utils.CommonConstants;
 import com.unimelbCoder.melbcode.utils.SpringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
 @Service
 public class RabbitmqServiceImpl implements RabbitmqService {
 
+    @Autowired
+    NotifyMsgDao notifyMsgDao;
+
     @Override
     public boolean enabled() {
-        return "true".equalsIgnoreCase(SpringUtils.getConfig("rabbitmq.switchFlag"));
+        return "true".equalsIgnoreCase(SpringUtils.getConfig("rabbitmq.switch_flag"));
     }
 
     @Override
@@ -69,7 +76,16 @@ public class RabbitmqServiceImpl implements RabbitmqService {
                     String message = new String(body, "UTF-8");
                     System.out.println("Consumer msg: " + message);
 
-                    //存储进DB...
+                    //存储进DB
+                    HashMap<String, Object> saveMsg = JSON.parseObject(message, HashMap.class);
+                    System.out.println(saveMsg);
+                    notifyMsgDao.createNotifyMsg(
+                            (Integer) saveMsg.get("related_id"),
+                            (Integer) saveMsg.get("notify_user_id"),
+                            (Integer) saveMsg.get("operate_user_id"),
+                            (String) saveMsg.get("msg"),
+                            (Integer) saveMsg.get("type"));
+
                     //获取Rabbitmq消息，并保存到DB
                     channel.basicAck(envelope.getDeliveryTag(), false);
                 }
@@ -92,7 +108,7 @@ public class RabbitmqServiceImpl implements RabbitmqService {
 
         while (true) {
             try {
-                System.out.println("Process Consumer Msg cycle. ");
+//                System.out.println("Process Consumer Msg cycle. ");
                 consumeMsg(CommonConstants.EXCHANGE_NAME_DIRECT,
                         CommonConstants.QUEUE_NAME_PRAISE,
                         CommonConstants.QUEUE_KEY_PRAISE);

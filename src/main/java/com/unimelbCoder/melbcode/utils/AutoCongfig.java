@@ -16,27 +16,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
 @ComponentScan(basePackages = "com.unimelbCoder.melbcode.Service")
-@EnableConfigurationProperties(RabbitmqPropertiesDTO.class)
-public class AutoCongfig implements ApplicationRunner {
+public class AutoCongfig {
     public AutoCongfig(RedisTemplate<String, String> redisTemplate){
         RedisClient.register(redisTemplate);
-    }
-
-    @Resource
-    private RabbitmqService rabbitmqService;
-
-    @Autowired
-    private RabbitmqPropertiesDTO rabbitmqPropertiesDTO;
-
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        String host = rabbitmqPropertiesDTO.getHost();
-        Integer port = rabbitmqPropertiesDTO.getPort();
-        String userName = rabbitmqPropertiesDTO.getUsername();
-        String password = rabbitmqPropertiesDTO.getPassword();
-        String vhost = rabbitmqPropertiesDTO.getVirtualhost();
-        Integer poolSize = rabbitmqPropertiesDTO.getPoolSize();
-        RabbitmqConnectionPool.initRabbitmqConnectionPool(host, port, userName, password, vhost, poolSize);
-        AsyncUtil.execute(() -> rabbitmqService.processConsumerMsg());
     }
 }

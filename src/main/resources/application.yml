@@ -5,7 +5,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/unimelbcoder?useUnicode=true&characterEncoding=utf8&SSL=false&serverTimezone=UTC
     username: root
-    password: root666
+    password: Tgy998899880
   data:
     redis:
       host: localhost
@@ -30,7 +30,7 @@ rabbitmq:
   username: admin
   password: admin
   virtualhost: /
-  switch_flag: true
+  switch_flag: false # 默认为false，需要时改为true打开mq服务
   pool_size: 5
 
 server:

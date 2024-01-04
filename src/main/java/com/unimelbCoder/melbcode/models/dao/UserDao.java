@@ -13,6 +13,6 @@ public interface UserDao {
     public void createUser(@Param("id") String id, @Param("username") String username, @Param("password") String password,
                            @Param("email") String email, @Param("role") String role, @Param("age") int age,
                            @Param("introduction") String introduction);
-
     public int countByUsername(@Param("username") String username);
+
 }

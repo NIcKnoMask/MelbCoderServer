@@ -31,8 +31,7 @@ public interface NotifyMsgDao {
                                 @Param("notify_user_id") Integer notifyUserId,
                                 @Param("operate_user_id") Integer operateUserId,
                                 @Param("msg") String msg,
-                                @Param("type") Integer type,
-                                @Param("state") Integer state);
+                                @Param("type") Integer type);
 
 
 }
