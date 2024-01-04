@@ -81,8 +81,8 @@ public class RabbitmqServiceImpl implements RabbitmqService {
                     System.out.println(saveMsg);
                     notifyMsgDao.createNotifyMsg(
                             (Integer) saveMsg.get("related_id"),
-                            (Integer) saveMsg.get("notify_user_id"),
-                            (Integer) saveMsg.get("operate_user_id"),
+                            (String) saveMsg.get("notify_user_id"),
+                            (String) saveMsg.get("operate_user_id"),
                             (String) saveMsg.get("msg"),
                             (Integer) saveMsg.get("type"));
 

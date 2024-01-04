@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 public class Article {
 
     private int id;
-    private int user_id;
+    private String user_id;
     private int article_type;
     private String title;
     private String short_title;
@@ -15,7 +15,7 @@ public class Article {
     private Timestamp create_time;
     private Timestamp update_time;
 
-    public Article(int id, int user_id, int article_type, String title, String short_title, int category_id,
+    public Article(int id, String user_id, int article_type, String title, String short_title, int category_id,
                    int public_status, int deleted, Timestamp create_time, Timestamp update_time) {
         this.id = id;
         this.user_id = user_id;
@@ -37,11 +37,11 @@ public class Article {
         this.id = id;
     }
 
-    public int getUser_id() {
+    public String getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(String user_id) {
         this.user_id = user_id;
     }
 

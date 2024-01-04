@@ -4,6 +4,8 @@ import com.unimelbCoder.melbcode.bean.NotifyMsg;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface NotifyMsgDao {
 
@@ -15,21 +17,21 @@ public interface NotifyMsgDao {
      * @param relatedId
      * @return
      */
-    public NotifyMsg getNotifyMsgByRelatedIdAndType(@Param("notify_user_id") Integer notifyUserId,
-                                                    @Param("operate_user_id") Integer operateUserId,
+    public NotifyMsg getNotifyMsgByRelatedIdAndType(@Param("notify_user_id") String notifyUserId,
+                                                    @Param("operate_user_id") String operateUserId,
                                                     @Param("type") Integer type,
                                                     @Param("related_id") Integer relatedId);
 
-    public NotifyMsg getNotifyMsgByIdx(@Param("notify_user_id") Integer notifyUserId,
-                                       @Param("type") Integer type,
-                                       @Param("state") Integer state);
+    public List<NotifyMsg> getNotifyMsgByIdx(@Param("notify_user_id") String notifyUserId,
+                                             @Param("type") Integer type,
+                                             @Param("state") Integer state);
 
-    public Integer countByUserIdAndStat(@Param("notify_user_id") Integer notifyUserId,
+    public Integer countByUserIdAndStat(@Param("notify_user_id") String notifyUserId,
                                     @Param("state") Integer state);
 
     public void createNotifyMsg(@Param("related_id") Integer relatedId,
-                                @Param("notify_user_id") Integer notifyUserId,
-                                @Param("operate_user_id") Integer operateUserId,
+                                @Param("notify_user_id") String notifyUserId,
+                                @Param("operate_user_id") String operateUserId,
                                 @Param("msg") String msg,
                                 @Param("type") Integer type);
 
