@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 
 public class Comment {
 
+    private Integer id;
+
     private Integer article_id;
 
     private String user_id;
@@ -16,13 +18,29 @@ public class Comment {
 
     private Integer deleted;
 
-    public Comment(Integer article_id, String user_id, String content, Integer top_comment_id, Integer parent_comment_id, Integer deleted) {
+    private Timestamp create_time;
+
+    private Timestamp update_time;
+
+    public Comment(Integer id, Integer article_id, String user_id, String content, Integer top_comment_id,
+                   Integer parent_comment_id, Integer deleted, Timestamp create_time, Timestamp update_time) {
+        this.id = id;
         this.article_id = article_id;
         this.user_id = user_id;
         this.content = content;
         this.top_comment_id = top_comment_id;
         this.parent_comment_id = parent_comment_id;
         this.deleted = deleted;
+        this.create_time = create_time;
+        this.update_time = update_time;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getArticle_id() {
@@ -71,5 +89,21 @@ public class Comment {
 
     public void setDeleted(Integer deleted) {
         this.deleted = deleted;
+    }
+
+    public Timestamp getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(Timestamp create_time) {
+        this.create_time = create_time;
+    }
+
+    public Timestamp getUpdate_time() {
+        return update_time;
+    }
+
+    public void setUpdate_time(Timestamp update_time) {
+        this.update_time = update_time;
     }
 }

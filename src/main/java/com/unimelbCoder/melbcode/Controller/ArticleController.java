@@ -3,6 +3,7 @@ package com.unimelbCoder.melbcode.Controller;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
+import com.unimelbCoder.melbcode.Service.Comment.CommentService;
 import com.unimelbCoder.melbcode.bean.Article;
 import com.unimelbCoder.melbcode.bean.ArticleDetail;
 import com.unimelbCoder.melbcode.bean.Comment;
@@ -12,6 +13,7 @@ import com.unimelbCoder.melbcode.models.dao.ArticleDao;
 import com.unimelbCoder.melbcode.models.dao.ArticleDetailDao;
 import com.unimelbCoder.melbcode.models.dao.CommentDao;
 import com.unimelbCoder.melbcode.models.dao.UserDao;
+import com.unimelbCoder.melbcode.models.dto.comment.TopCommentDTO;
 import com.unimelbCoder.melbcode.models.enums.NotifyTypeEnum;
 import com.unimelbCoder.melbcode.utils.CommonConstants;
 import com.unimelbCoder.melbcode.utils.JwtUtils;
@@ -49,6 +51,9 @@ public class ArticleController {
 
     @Autowired(required = false)
     private RedissonClient redissonClient;
+
+    @Autowired
+    private CommentService commentService;
 
     @RequestMapping("/createArticle")
     public String createArticle(@RequestBody Map<String, Object> map,
@@ -194,7 +199,8 @@ public class ArticleController {
 
         Article article = articleDao.getArticleById(id);
         ArticleDetail articleDetail = articleDetailDao.getArticleDetailByIdx(id, 0);
-        List<Comment> topComments = commentDao.getTopCommentList(id);
+        List<TopCommentDTO> topComments = commentService.getArticleComments(id);
+
         User user = userDao.getUserByName(article.getUser_id());
 
         String flag = "error";
