@@ -1,5 +1,6 @@
 package com.unimelbCoder.melbcode.Service.Comment;
 
+import com.unimelbCoder.melbcode.Service.Comment.model.CommentSaveReq;
 import com.unimelbCoder.melbcode.bean.Comment;
 import com.unimelbCoder.melbcode.models.dto.comment.TopCommentDTO;
 
@@ -11,6 +12,10 @@ public interface CommentService {
      * @param articleId
      * @return
      */
-    List<TopCommentDTO> getArticleComments(Integer articleId);
+    List<TopCommentDTO> getArticleComments(Long articleId);
+
+    Long saveComment(CommentSaveReq saveReq);
+
+    void deleteComment(Long commentId, Long userId);
 
 }

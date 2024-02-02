@@ -10,7 +10,7 @@
         SELECT * FROM notify_msg WHERE notify_user_id=#{notify_user_id} AND type=#{type} AND state=#{state}
     </select>
     <select id="countByUserIdAndStat" resultType="Integer">
-        SELECT COUNT(id) FROM notify_msg WHERE notify_user_id=#{notifyUserId} AND AND state=#{state}
+        SELECT COUNT(id) FROM notify_msg WHERE notify_user_id=#{notifyUserId} AND state=#{state}
     </select>
     <insert id="createNotifyMsg" parameterType="com.unimelbCoder.melbcode.bean.NotifyMsg">
         INSERT INTO notify_msg (related_id, notify_user_id, operate_user_id, msg, type, state)

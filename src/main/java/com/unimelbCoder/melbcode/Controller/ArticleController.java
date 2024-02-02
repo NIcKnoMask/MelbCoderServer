@@ -194,11 +194,11 @@ public class ArticleController {
     }
 
     @GetMapping("/article/{id}")
-    public String queryArticle(@PathVariable int id) {
+    public String queryArticle(@PathVariable Long id) {
         HashMap<String, Object> res = new HashMap<>();
 
-        Article article = articleDao.getArticleById(id);
-        ArticleDetail articleDetail = articleDetailDao.getArticleDetailByIdx(id, 0);
+        Article article = articleDao.getArticleById(id.intValue());
+        ArticleDetail articleDetail = articleDetailDao.getArticleDetailByIdx(id.intValue(), 0);
         List<TopCommentDTO> topComments = commentService.getArticleComments(id);
 
         User user = userDao.getUserByName(article.getUser_id());

@@ -4,17 +4,17 @@ import java.sql.Timestamp;
 
 public class Comment {
 
-    private Integer id;
+    private Long id;
 
-    private Integer article_id;
+    private Long article_id;
 
     private String user_id;
 
     private String content;
 
-    private Integer top_comment_id;
+    private Long top_comment_id;
 
-    private Integer parent_comment_id;
+    private Long parent_comment_id;
 
     private Integer deleted;
 
@@ -22,8 +22,8 @@ public class Comment {
 
     private Timestamp update_time;
 
-    public Comment(Integer id, Integer article_id, String user_id, String content, Integer top_comment_id,
-                   Integer parent_comment_id, Integer deleted, Timestamp create_time, Timestamp update_time) {
+    public Comment(Long id, Long article_id, String user_id, String content, Long top_comment_id,
+                   Long parent_comment_id, Integer deleted, Timestamp create_time, Timestamp update_time) {
         this.id = id;
         this.article_id = article_id;
         this.user_id = user_id;
@@ -35,19 +35,23 @@ public class Comment {
         this.update_time = update_time;
     }
 
-    public Integer getId() {
+    public Comment() {
+
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getArticle_id() {
+    public Long getArticle_id() {
         return article_id;
     }
 
-    public void setArticle_id(Integer article_id) {
+    public void setArticle_id(Long article_id) {
         this.article_id = article_id;
     }
 
@@ -67,19 +71,19 @@ public class Comment {
         this.content = content;
     }
 
-    public Integer getTop_comment_id() {
+    public Long getTop_comment_id() {
         return top_comment_id;
     }
 
-    public void setTop_comment_id(Integer top_comment_id) {
+    public void setTop_comment_id(Long top_comment_id) {
         this.top_comment_id = top_comment_id;
     }
 
-    public Integer getParent_comment_id() {
+    public Long getParent_comment_id() {
         return parent_comment_id;
     }
 
-    public void setParent_comment_id(Integer parent_comment_id) {
+    public void setParent_comment_id(Long parent_comment_id) {
         this.parent_comment_id = parent_comment_id;
     }
 

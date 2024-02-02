@@ -23,7 +23,7 @@ public class BaseCommentDTO implements Comparable<BaseCommentDTO>{
     /**
      * 评论id
      */
-    private Integer commentId;
+    private Long commentId;
 
     /**
      * 点赞数量
