@@ -4,7 +4,7 @@
 <mapper namespace="com.unimelbCoder.melbcode.models.dao.UserFootDao">
     <select id="getUserFootByDocumentAndUserId" resultType="com.unimelbCoder.melbcode.bean.UserFoot">
         SELECT * FROM user_foot WHERE
-        user_id=#{userId} AND document_id=#{documentId} AND document_type=#{documentType}
+        user_id=#{user_id} AND document_id=#{document_id} AND document_type=#{document_type}
     </select>
     <select id="countArticleByUserId" resultType="com.unimelbCoder.melbcode.bean.UserFoot">
         SELECT * FROM user_foot WHERE document_user_id=#{userId} AND document_type=1
@@ -14,7 +14,7 @@
     </select>
     <insert id="createUserFoot" parameterType="com.unimelbCoder.melbcode.bean.UserFoot">
         INSERT INTO user_foot (user_id, document_id, document_type, document_user_id)
-        VALUES (#{userId}, #{documentId}, #{documentType}, #{authorId});
+        VALUES (#{user_id}, #{document_id}, #{document_type}, #{document_user_id});
     </insert>
     <update id="updateUserFootById" parameterType="com.unimelbCoder.melbcode.bean.UserFoot">
         UPDATE user_foot SET user_id=#{userFoot.getUserId()}, update_time=#{updateTime}

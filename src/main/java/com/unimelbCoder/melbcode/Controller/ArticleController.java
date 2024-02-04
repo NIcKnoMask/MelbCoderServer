@@ -109,7 +109,7 @@ public class ArticleController {
         }
 
         //活跃度事件发布
-        processAfterCreateArticle(userInfo.getUsername());
+        processAfterCreateArticle(userInfo.getId());
 
         return "ok";
     }

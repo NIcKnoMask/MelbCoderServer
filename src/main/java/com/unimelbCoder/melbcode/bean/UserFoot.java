@@ -14,7 +14,7 @@ public class UserFoot {
     /*
     用户ID
      */
-    private Long userId;
+    private String userId;
 
     /*
     文档ID （文章/评论）
@@ -29,7 +29,7 @@ public class UserFoot {
     /*
     发布文档的用户ID
      */
-    private Long documentUserId;
+    private String documentUserId;
 
     /*
     收藏状态：0-未收藏，1-已收藏，2-取消收藏
@@ -61,7 +61,7 @@ public class UserFoot {
      */
     private Timestamp updateTime;
 
-    public UserFoot(Long id, Long userId, Long documentId, Integer documentType, Long documentUserId,
+    public UserFoot(Long id, String userId, Long documentId, Integer documentType, String documentUserId,
                     Integer collectionStat, Integer readStat, Integer commentStat, Integer praiseStat,
                     Timestamp createTime, Timestamp updateTime) {
         this.id = id;
@@ -88,11 +88,11 @@ public class UserFoot {
         this.id = id;
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -112,11 +112,11 @@ public class UserFoot {
         this.documentType = documentType;
     }
 
-    public Long getDocumentUserId() {
+    public String getDocumentUserId() {
         return documentUserId;
     }
 
-    public void setDocumentUserId(Long documentUserId) {
+    public void setDocumentUserId(String documentUserId) {
         this.documentUserId = documentUserId;
     }
 
