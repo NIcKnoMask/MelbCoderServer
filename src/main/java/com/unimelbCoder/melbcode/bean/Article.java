@@ -29,6 +29,10 @@ public class Article {
         this.update_time = update_time;
     }
 
+    public Article() {
+
+    }
+
     public int getId() {
         return id;
     }

@@ -2,10 +2,10 @@ package com.unimelbCoder.melbcode.Service.UserFoot;
 
 import com.unimelbCoder.melbcode.bean.Comment;
 import com.unimelbCoder.melbcode.bean.UserFoot;
+import com.unimelbCoder.melbcode.models.enums.DocumentTypeEnum;
+import com.unimelbCoder.melbcode.models.enums.OperateTypeEnum;
 
 public interface UserFootService {
-
-    // TODO: 根据用户表单更新后合并修改
 
     /**
      * 保存或更新状态信息
@@ -17,7 +17,7 @@ public interface UserFootService {
      * @param operateType 操作类型：点赞，评论，收藏等
      * @return
      */
-    UserFoot saveOrUpdateUserFoot(Integer documentType, Long documentId, String authorId, String userId, Integer operateType);
+    UserFoot saveOrUpdateUserFoot(DocumentTypeEnum documentType, Long documentId, String authorId, String userId, OperateTypeEnum operateType);
 
     /**
      * 保存评论足迹
@@ -47,6 +47,6 @@ public interface UserFootService {
      * @param userId
      * @return
      */
-    UserFoot queryUserFoot(Long documentId, Integer type, Long userId);
+    UserFoot queryUserFoot(Long documentId, Integer type, String userId);
 
 }

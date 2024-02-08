@@ -4,8 +4,11 @@ package com.unimelbCoder.melbcode.Service.Rank.listener;
 import com.unimelbCoder.melbcode.Service.Rank.Impl.UserRankServiceImpl;
 import com.unimelbCoder.melbcode.Service.Rank.UserRankService;
 import com.unimelbCoder.melbcode.Service.Rank.model.ActivityRankBo;
+import com.unimelbCoder.melbcode.Service.Statistics.CountConstants;
 import com.unimelbCoder.melbcode.Service.User.Impl.UserServiceImpl;
 import com.unimelbCoder.melbcode.bean.User;
+import com.unimelbCoder.melbcode.bean.UserFoot;
+import com.unimelbCoder.melbcode.cache.RedisClient;
 import com.unimelbCoder.melbcode.utils.NotifyMsgEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -36,10 +39,11 @@ public class UserActivityListener {
 //                foot = (UserFootDO) msgEvent.getContent();
 //                userActivityRankService.addActivityScore(ReqInfoContext.getReqInfo().getUserId(), new ActivityScoreBo().setCollect(false).setArticleId(foot.getDocumentId()));
                 break;
-//            case PRAISE:
-//                foot = (UserFootDO) msgEvent.getContent();
-//                userActivityRankService.addActivityScore(ReqInfoContext.getReqInfo().getUserId(), new ActivityScoreBo().setPraise(true).setArticleId(foot.getDocumentId()));
-//                break;
+            case PRAISE:
+                UserFoot foot = (UserFoot) msgEvent.getContent();
+                RedisClient.hIncr(CountConstants.ARTICLE_STATISTIC_INFO + foot.getDocumentId(), CountConstants.PRAISE_COUNT, 1);
+                userActivityRankService.addActivityScore(foot.getUserId(), new ActivityRankBo().setPraise(true).setArticleId(foot.getDocumentId()));
+                break;
 //            case CANCEL_PRAISE:
 //                foot = (UserFootDO) msgEvent.getContent();
 //                userActivityRankService.addActivityScore(ReqInfoContext.getReqInfo().getUserId(), new ActivityScoreBo().setPraise(false).setArticleId(foot.getDocumentId()));

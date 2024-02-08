@@ -9,9 +9,6 @@ import java.util.List;
 
 @Repository
 public interface UserFootDao {
-
-    // TODO: 根据用户表单更新后合并修改
-
     public UserFoot getUserFootByDocumentAndUserId(@Param("user_id") String userId, @Param("document_id") Long documentId,
                                                    @Param("document_type") Integer documentType);
 

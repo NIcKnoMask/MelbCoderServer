@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ArticleDao {
-    public Article getArticleById(@Param("id") int id);
+    public Article getArticleById(@Param("id") Integer id);
 
     public Article getArticleByCategory(@Param("category_id") String category_id);
 
