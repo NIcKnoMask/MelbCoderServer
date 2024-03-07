@@ -12,7 +12,7 @@ public interface CommentService {
      * @param articleId
      * @return
      */
-    List<TopCommentDTO> getArticleComments(Long articleId);
+    List<TopCommentDTO> getArticleComments(Long articleId, String userId);
 
     Long saveComment(CommentSaveReq saveReq);
 

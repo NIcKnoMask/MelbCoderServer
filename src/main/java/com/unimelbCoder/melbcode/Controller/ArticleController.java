@@ -3,6 +3,7 @@ package com.unimelbCoder.melbcode.Controller;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
+import com.unimelbCoder.melbcode.Service.Article.ArticleService;
 import com.unimelbCoder.melbcode.Service.Comment.CommentService;
 import com.unimelbCoder.melbcode.bean.Article;
 import com.unimelbCoder.melbcode.bean.ArticleDetail;
@@ -13,6 +14,7 @@ import com.unimelbCoder.melbcode.models.dao.ArticleDao;
 import com.unimelbCoder.melbcode.models.dao.ArticleDetailDao;
 import com.unimelbCoder.melbcode.models.dao.CommentDao;
 import com.unimelbCoder.melbcode.models.dao.UserDao;
+import com.unimelbCoder.melbcode.models.dto.article.ArticleDTO;
 import com.unimelbCoder.melbcode.models.dto.comment.TopCommentDTO;
 import com.unimelbCoder.melbcode.models.enums.NotifyTypeEnum;
 import com.unimelbCoder.melbcode.utils.CommonConstants;
@@ -54,6 +56,9 @@ public class ArticleController {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    ArticleService articleService;
 
     @RequestMapping("/createArticle")
     public String createArticle(@RequestBody Map<String, Object> map,
@@ -109,7 +114,7 @@ public class ArticleController {
         }
 
         //活跃度事件发布
-        processAfterCreateArticle(userInfo.getUsername());
+        processAfterCreateArticle(userInfo.getId());
 
         return "ok";
     }
@@ -194,19 +199,32 @@ public class ArticleController {
     }
 
     @GetMapping("/article/{id}")
-    public String queryArticle(@PathVariable Long id) {
+    public String queryArticle(@PathVariable Long id,
+                               @RequestHeader(name = "Authorization", required = false) String token) {
+
+        String currentUserId;
+        // 如果token是空的，或者token已经过期了，就重新login
+        if (token == null || jwtUtils.isTokenExpired(token)) {
+            currentUserId = null;
+        }
+        else {
+            User userInfo = jwtUtils.getUserInfoFromToken(token, User.class);
+            currentUserId = userInfo.getId();
+        }
+
         HashMap<String, Object> res = new HashMap<>();
 
-        Article article = articleDao.getArticleById(id.intValue());
-        ArticleDetail articleDetail = articleDetailDao.getArticleDetailByIdx(id.intValue(), 0);
-        List<TopCommentDTO> topComments = commentService.getArticleComments(id);
+//        Article article = articleDao.getArticleById(id.intValue());
+        ArticleDTO article = articleService.queryFullArticleInfo(id.intValue(), currentUserId);
+//        ArticleDetail articleDetail = articleDetailDao.getArticleDetailByIdx(id.intValue(), 0);
+        List<TopCommentDTO> topComments = commentService.getArticleComments(id, currentUserId);
 
-        User user = userDao.getUserByName(article.getUser_id());
+        User user = userDao.getUserByName(article.getAuthorId());
 
         String flag = "error";
         if (article != null && user != null) {
             res.put("article", article);
-            res.put("articleDetail", articleDetail);
+            res.put("articleDetail", article.getContent());
             res.put("user", user);
             res.put("topComment", topComments);
             flag = "ok";

@@ -45,7 +45,7 @@ public class CommentServiceImpl implements CommentService {
     private UserFootService userFootService;
 
     @Override
-    public List<TopCommentDTO> getArticleComments(Long articleId) {
+    public List<TopCommentDTO> getArticleComments(Long articleId, String userId) {
 
         // 1.查询顶级评论
         List<Comment> allComments = commentDao.getTopCommentList(articleId);
@@ -70,7 +70,7 @@ public class CommentServiceImpl implements CommentService {
         List<TopCommentDTO> ans = new ArrayList<>();
         allComments.forEach(comment -> {
             TopCommentDTO dto = topComments.get(comment.getId());
-            fillTopCommentInfo(dto);
+            fillTopCommentInfo(dto, userId);
             ans.add(dto);
         });
 
@@ -100,14 +100,18 @@ public class CommentServiceImpl implements CommentService {
         });
     }
 
-    private void fillTopCommentInfo(TopCommentDTO commentDTO) {
-        fillCommentInfo(commentDTO);
-        commentDTO.getChildComments().forEach(this::fillCommentInfo);
+    private void fillTopCommentInfo(TopCommentDTO commentDTO, String userId) {
+        fillCommentInfo(commentDTO, userId);
+
+        for (SubCommentDTO child : commentDTO.getChildComments()) {
+            fillCommentInfo(child, userId);
+        }
+
+//        commentDTO.getChildComments().forEach(this::fillCommentInfo);
         Collections.sort(commentDTO.getChildComments());
     }
     
-    private void fillCommentInfo(BaseCommentDTO comment) {
-        // TODO: 需要将user部分重构表单结合写
+    private void fillCommentInfo(BaseCommentDTO comment, String userId) {
         SimpleUserInfoDTO simpleUserInfoDTO = userService.queryUserInfo(comment.getUserId());
         if (simpleUserInfoDTO == null) {
             // 用户注销情况，给一个默认用户
@@ -124,25 +128,34 @@ public class CommentServiceImpl implements CommentService {
         }
 
         // TODO: 用户足迹问题
-//        Long praiseCount = userFootDao.countCommentPraise(comment.getCommentId());
-//        comment.setPraiseCount(praiseCount.intValue());
+        Long praiseCount = userFootDao.countCommentPraise(comment.getCommentId());
+        comment.setPraiseCount(praiseCount.intValue());
 
         // 查询当前登录用户是否点赞过
         // TODO: 用户修改后的对齐问题
-//        Long currentUserId = ReqInfoContext.getReqInfo().getUserId();
-//        if (currentUserId != null) {
-//            // 判断当前用户是否点赞过
-//            UserFoot userFoot = userFootService.queryUserFoot(comment.getCommentId(), 2, currentUserId);
-//            comment.setPraised(userFoot != null && Objects.equals(userFoot.getPraiseStat(), 1));
-//        }
-//        else {
-//            comment.setPraised(false);
-//        }
+//        String currentUserId = ReqInfoContext.getReqInfo().getUserId();
+        if (userId != null) {
+            // 判断当前用户是否点赞过
+            UserFoot userFoot = userFootService.queryUserFoot(comment.getCommentId(), 2, userId);
+            comment.setPraised(userFoot != null && Objects.equals(userFoot.getPraiseStat(), 1));
+        }
+        else {
+            comment.setPraised(false);
+        }
     }
 
     @Override
     public Long saveComment(CommentSaveReq saveReq) {
-        return null;
+        // 保存评论
+        Comment comment;
+        if (saveReq.getCommentId() == null || saveReq.getCommentId() == 0) {
+            comment = addComment(saveReq);
+        }
+        else {
+            comment = updateComment(saveReq);
+        }
+
+        return comment.getId();
     }
 
     private Comment addComment(CommentSaveReq saveReq) {
@@ -159,7 +172,7 @@ public class CommentServiceImpl implements CommentService {
         if (article == null) {
             throw new NullPointerException("文章不存在：文章=" + saveReq.getArticleId());
         }
-        userFootService.saveCommentFoot(comment, article.getId(), parentCommentUser);
+        userFootService.saveCommentFoot(comment, article.getUser_id(), parentCommentUser);
 
         // 4. 发布评论事件，用于活跃度积分
         SpringUtils.publishEvent(new NotifyMsgEvent<>(this, NotifyTypeEnum.COMMENT, comment));
@@ -167,6 +180,12 @@ public class CommentServiceImpl implements CommentService {
             SpringUtils.publishEvent(new NotifyMsgEvent<>(this, NotifyTypeEnum.REPLY, comment));
         }
 
+        return comment;
+    }
+
+    private Comment updateComment(CommentSaveReq saveReq) {
+        // TODO: 实际更新逻辑需要实现
+        Comment comment = new Comment();
         return comment;
     }
 

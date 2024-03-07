@@ -11,9 +11,9 @@ public class NotifyMsg {
      */
     private Integer relatedId;
 
-    private Integer notifyUserId;
+    private String notifyUserId;
 
-    private Integer operateUserId;
+    private String operateUserId;
 
     private String msg;
 
@@ -21,7 +21,7 @@ public class NotifyMsg {
 
     private Integer state;
 
-    public NotifyMsg(int id, Integer relatedId, Integer notifyUserId, Integer operateUserId, String msg, Integer type, Integer state) {
+    public NotifyMsg(int id, Integer relatedId, String notifyUserId, String operateUserId, String msg, Integer type, Integer state) {
         this.id = id;
         this.relatedId = relatedId;
         this.notifyUserId = notifyUserId;
@@ -47,19 +47,19 @@ public class NotifyMsg {
         this.relatedId = relatedId;
     }
 
-    public Integer getNotifyUserId() {
+    public String getNotifyUserId() {
         return notifyUserId;
     }
 
-    public void setNotifyUserId(Integer notifyUserId) {
+    public void setNotifyUserId(String notifyUserId) {
         this.notifyUserId = notifyUserId;
     }
 
-    public Integer getOperateUserId() {
+    public String getOperateUserId() {
         return operateUserId;
     }
 
-    public void setOperateUserId(Integer operateUserId) {
+    public void setOperateUserId(String operateUserId) {
         this.operateUserId = operateUserId;
     }
 

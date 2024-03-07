@@ -1,6 +1,8 @@
 package com.unimelbCoder.melbcode.cache;
 
+import com.google.common.collect.Maps;
 import com.unimelbCoder.melbcode.bean.User;
+import com.unimelbCoder.melbcode.utils.JsonUtils;
 import com.unimelbCoder.melbcode.utils.JwtUtils;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,20 @@ public class RedisClient{
         }
     }
 
+    public static <T> byte[] valBytes(T val) {
+        if (val instanceof String) {
+            return ((String) val).getBytes(CODE);
+        }
+        else {
+            return JsonUtils.toStr(val).getBytes(CODE);
+        }
+    }
+
+    /**
+     * 缓存键key的序列化生成
+     * @param key
+     * @return
+     */
     public static byte[] keyBytes(String key) {
         nullCheck(key);
         key = KEY_PREFIX + key;
@@ -101,5 +117,40 @@ public class RedisClient{
     public static List<String> getMessages(String key) {
         // LRANGE to retrieve all messages from the list
         return template.opsForList().range(key, 0, -1);
+    }
+
+    public static Long hIncr(String key, String content, Integer cnt) {
+        return template.execute((RedisCallback<Long>) con -> con.hIncrBy(keyBytes(key), valBytes(content), cnt));
+    }
+
+    public static <T> Map<String, T> hGetAll(String key, Class<T> cls) {
+        Map<byte[], byte[]> records = template.execute((RedisCallback<Map<byte[], byte[]>>) con -> con.hGetAll(keyBytes(key)));
+        if (records == null) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, T> result = Maps.newHashMapWithExpectedSize(records.size());
+        for (Map.Entry<byte[], byte[]> entry : records.entrySet()) {
+            if (entry.getKey() == null) {
+                continue;
+            }
+
+            result.put(new String(entry.getKey()), toObj(entry.getValue(), cls));
+
+        }
+
+        return result;
+    }
+
+    private static <T> T toObj(byte[] ans, Class<T> clz) {
+        if (ans == null) {
+            return null;
+        }
+
+        if (clz == String.class) {
+            return (T) new String(ans, CODE);
+        }
+
+        return JsonUtils.toObj(new String(ans, CODE), clz);
     }
 }

@@ -4,8 +4,6 @@ import java.sql.Timestamp;
 
 public class UserFoot {
 
-    // TODO: 根据用户表单更新后合并修改
-
     /*
     主键ID
      */
@@ -14,67 +12,67 @@ public class UserFoot {
     /*
     用户ID
      */
-    private Long userId;
+    private String user_id;
 
     /*
     文档ID （文章/评论）
      */
-    private Long documentId;
+    private Long document_id;
 
     /*
     1-文章，2-评论
      */
-    private Integer documentType;
+    private Integer document_type;
 
     /*
     发布文档的用户ID
      */
-    private Long documentUserId;
+    private String document_user_id;
 
     /*
     收藏状态：0-未收藏，1-已收藏，2-取消收藏
      */
-    private Integer collectionStat;
+    private Integer collection_stat;
 
     /*
     阅读状态：0-未读，1-已读
      */
-    private Integer readStat;
+    private Integer read_stat;
 
     /*
     评论状态：0-未评论，1-已评论，2-删除评论
      */
-    private Integer commentStat;
+    private Integer comment_stat;
 
     /*
     点赞状态：0-未点赞，1-已点赞，2-取消点赞
      */
-    private Integer praiseStat;
+    private Integer praise_stat;
 
     /*
     创建时间
      */
-    private Timestamp createTime;
+    private Timestamp create_time;
 
     /*
     更新时间
      */
-    private Timestamp updateTime;
+    private Timestamp update_time;
 
-    public UserFoot(Long id, Long userId, Long documentId, Integer documentType, Long documentUserId,
+    public UserFoot(Long id, String userId, Long documentId, Integer documentType, String documentUserId,
                     Integer collectionStat, Integer readStat, Integer commentStat, Integer praiseStat,
                     Timestamp createTime, Timestamp updateTime) {
         this.id = id;
-        this.userId = userId;
-        this.documentId = documentId;
-        this.documentType = documentType;
-        this.documentUserId = documentUserId;
-        this.collectionStat = collectionStat;
-        this.readStat = readStat;
-        this.commentStat = commentStat;
-        this.praiseStat = praiseStat;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
+        this.user_id = userId;
+        this.document_id = documentId;
+        this.document_type = documentType;
+        this.document_user_id = documentUserId;
+        this.collection_stat = collectionStat;
+        this.read_stat = readStat;
+        this.comment_stat = commentStat;
+        this.praise_stat = praiseStat;
+        this.create_time = createTime;
+        this.update_time = updateTime;
     }
 
     public UserFoot() {
@@ -88,83 +86,83 @@ public class UserFoot {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getUserId() {
+        return user_id;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserId(String userId) {
+        this.user_id = userId;
     }
 
     public Long getDocumentId() {
-        return documentId;
+        return document_id;
     }
 
     public void setDocumentId(Long documentId) {
-        this.documentId = documentId;
+        this.document_id = documentId;
     }
 
     public Integer getDocumentType() {
-        return documentType;
+        return document_type;
     }
 
     public void setDocumentType(Integer documentType) {
-        this.documentType = documentType;
+        this.document_type = documentType;
     }
 
-    public Long getDocumentUserId() {
-        return documentUserId;
+    public String getDocumentUserId() {
+        return document_user_id;
     }
 
-    public void setDocumentUserId(Long documentUserId) {
-        this.documentUserId = documentUserId;
+    public void setDocumentUserId(String documentUserId) {
+        this.document_user_id = documentUserId;
     }
 
     public Integer getCollectionStat() {
-        return collectionStat;
+        return collection_stat;
     }
 
     public void setCollectionStat(Integer collectionStat) {
-        this.collectionStat = collectionStat;
+        this.collection_stat = collectionStat;
     }
 
     public Integer getReadStat() {
-        return readStat;
+        return read_stat;
     }
 
     public void setReadStat(Integer readStat) {
-        this.readStat = readStat;
+        this.read_stat = readStat;
     }
 
     public Integer getCommentStat() {
-        return commentStat;
+        return comment_stat;
     }
 
     public void setCommentStat(Integer commentStat) {
-        this.commentStat = commentStat;
+        this.comment_stat = commentStat;
     }
 
     public Integer getPraiseStat() {
-        return praiseStat;
+        return praise_stat;
     }
 
     public void setPraiseStat(Integer praiseStat) {
-        this.praiseStat = praiseStat;
+        this.praise_stat = praiseStat;
     }
 
     public Timestamp getCreateTime() {
-        return createTime;
+        return create_time;
     }
 
     public void setCreateTime(Timestamp createTime) {
-        this.createTime = createTime;
+        this.create_time = createTime;
     }
 
     public Timestamp getUpdateTime() {
-        return updateTime;
+        return update_time;
     }
 
     public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
+        this.update_time = updateTime;
     }
 }
