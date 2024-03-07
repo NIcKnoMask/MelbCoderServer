@@ -16,14 +16,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class RedisClient{
-
     private static RedisTemplate<String, String> template;
 
     public static void register(RedisTemplate<String, String> template){
@@ -152,5 +148,28 @@ public class RedisClient{
         }
 
         return JsonUtils.toObj(new String(ans, CODE), clz);
+    }
+
+    /**
+     * 查询用户是否有投资记录
+     */
+    public static boolean isUserInvested(String userId){
+        return false;
+    }
+
+    /**
+     * 更新当天每个币种的价格
+     * @param prices
+     * @param tagName
+     */
+    public static void updateCoinPrice(Map<String, Double> prices, String tagName){
+        HashOperations<String, String, Double> hashOps = template.opsForHash();
+        hashOps.putAll(tagName, prices);
+    }
+
+    public static Map<String, Double> getCoinPrices(String tagName){
+        HashOperations<String, String, Double> hashOps = template.opsForHash();
+        Map<String, Double> prices = hashOps.entries(tagName);
+        return new HashMap<>(prices);
     }
 }
