@@ -4,6 +4,7 @@ import com.unimelbCoder.melbcode.bean.User;
 import com.unimelbCoder.melbcode.utils.JwtUtils;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
@@ -13,8 +14,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Set;
+import java.time.Duration;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class RedisClient{
@@ -98,5 +99,28 @@ public class RedisClient{
     public static List<String> getMessages(String key) {
         // LRANGE to retrieve all messages from the list
         return template.opsForList().range(key, 0, -1);
+    }
+
+    /**
+     * 查询用户是否有投资记录
+     */
+    public static boolean isUserInvested(String userId){
+        return false;
+    }
+
+    /**
+     * 更新当天每个币种的价格
+     * @param prices
+     * @param tagName
+     */
+    public static void updateCoinPrice(Map<String, Double> prices, String tagName){
+        HashOperations<String, String, Double> hashOps = template.opsForHash();
+        hashOps.putAll(tagName, prices);
+    }
+
+    public static Map<String, Double> getCoinPrices(String tagName){
+        HashOperations<String, String, Double> hashOps = template.opsForHash();
+        Map<String, Double> prices = hashOps.entries(tagName);
+        return new HashMap<>(prices);
     }
 }

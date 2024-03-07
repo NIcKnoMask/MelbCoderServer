@@ -1,15 +1,19 @@
 package com.unimelbCoder.melbcode.Controller;
 
 import com.alibaba.fastjson.JSON;
+import com.unimelbCoder.melbcode.Service.Trade.InvestmentImpl;
 import com.unimelbCoder.melbcode.Service.User.Impl.UserServiceImpl;
 import com.unimelbCoder.melbcode.bean.User;
 import com.unimelbCoder.melbcode.models.dao.UserDao;
+import com.unimelbCoder.melbcode.models.dto.InvestAdviceDTO;
+import com.unimelbCoder.melbcode.models.dto.MessageItemDTO;
 import com.unimelbCoder.melbcode.models.dto.SimpleUserInfoDTO;
 import com.unimelbCoder.melbcode.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class UserController {
@@ -21,6 +25,9 @@ public class UserController {
 
     @Autowired
     private UserServiceImpl userService;
+
+    @Autowired
+    private InvestmentImpl investment;
 
     @Autowired
     UserRelationController userRelationController;
@@ -61,6 +68,39 @@ public class UserController {
         res.put("data", resInfo);
         res.put("flag", flag);
         res.put("isSelf", isSelf);
+        return JSON.toJSONString(res);
+    }
+
+    @PostMapping("/user/place")
+    public void placeCrypt(@RequestBody InvestAdviceDTO request){
+        String investor = request.getInvestorId();
+        String type = request.getInvestType();
+        int investCount = request.getInvestNum();
+        int advice = request.getApproveAdvice();
+        investment.investByType(investor, type, investCount, advice);
+    }
+
+    /**
+     * 用户外部钱包转usdt
+     * @param request: 1.外部钱包地址 2.转出金额 3.此次操作的用户id
+     */
+    @PostMapping("/user/transfer")
+    public String transferUSDT(@RequestBody Map<String, Object> request){
+        // 根据用户id查询剩余usdt余额 （在钱包相关服务中做成独立接口，供前端查询，减少数据库被调用次数
+        // 两个方式：调用外部钱包暴露的接口进行转账； 或者记录到后台中，人工进行转账
+        // 等待处理结果（数据库加入了该条转账记录即为成功
+        HashMap<String, Object> res = new HashMap<>();
+        return JSON.toJSONString(res);
+    }
+
+    /**
+     * 其他币与USDT相互转换
+     */
+    @PostMapping("/user/convert")
+    public String convertCurrency(@RequestBody Map<String, Object> request){
+        // 查询可用余额，根据实时价格计算可以转成多少另一种currency
+        // 调用数据库接口
+        HashMap<String, Object> res = new HashMap<>();
         return JSON.toJSONString(res);
     }
 }

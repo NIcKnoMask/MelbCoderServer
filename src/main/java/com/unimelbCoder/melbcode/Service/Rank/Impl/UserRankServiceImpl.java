@@ -36,9 +36,6 @@ public class UserRankServiceImpl implements UserRankService {
     @Autowired
     private UserServiceImpl userService;
 
-//    @Autowired
-//    private RedisTemplate<String, String> redisTemplate;
-
 
     /**
      * 当天活跃度排行榜
