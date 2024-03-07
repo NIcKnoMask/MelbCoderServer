@@ -100,27 +100,4 @@ public class RedisClient{
         // LRANGE to retrieve all messages from the list
         return template.opsForList().range(key, 0, -1);
     }
-
-    /**
-     * 查询用户是否有投资记录
-     */
-    public static boolean isUserInvested(String userId){
-        return false;
-    }
-
-    /**
-     * 更新当天每个币种的价格
-     * @param prices
-     * @param tagName
-     */
-    public static void updateCoinPrice(Map<String, Double> prices, String tagName){
-        HashOperations<String, String, Double> hashOps = template.opsForHash();
-        hashOps.putAll(tagName, prices);
-    }
-
-    public static Map<String, Double> getCoinPrices(String tagName){
-        HashOperations<String, String, Double> hashOps = template.opsForHash();
-        Map<String, Double> prices = hashOps.entries(tagName);
-        return new HashMap<>(prices);
-    }
 }
