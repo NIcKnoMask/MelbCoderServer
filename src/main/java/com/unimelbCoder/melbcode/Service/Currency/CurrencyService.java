@@ -5,9 +5,8 @@ public interface CurrencyService {
     /**
      * 获取币种价格 一分钟获取一次 并刷新进入缓存中
      * @param currencyName
-     * @param queryLink
      */
-    void getCurrencyPriceFromOuter(String currencyName, String queryLink);
+    void getCurrencyPriceFromOuter(String currencyName);
 
     /**
      * 获取每个币种单独的价格

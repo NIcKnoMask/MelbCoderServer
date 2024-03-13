@@ -6,7 +6,7 @@ public class WalletServiceImpl implements WalletService{
     private WalletDao walletDao;
 
     @Override
-    public double queryBalance(String userId, String currencyName){
+    public Double queryBalance(String userId, String currencyName){
         return walletDao.getCurrencyAmount(userId, currencyName);
     }
 
@@ -32,5 +32,13 @@ public class WalletServiceImpl implements WalletService{
 
     }
 
+    public Double investCurrency(String userId, String currencyName, Double amount){
+        // 需要先查询一次余额
+        return 0.0;
+    }
 
+    public Double withdrawCurrency(String userId, String currencyName, Double amount){
+        // 与上述方法其实重复 在业务层也可以调用上述方法，将amount改为-amount，则为当前方法
+        return 0.0;
+    }
 }

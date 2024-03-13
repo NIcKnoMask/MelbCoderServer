@@ -167,9 +167,77 @@ public class RedisClient{
         hashOps.putAll(tagName, prices);
     }
 
+    /**
+     * 获取所有货币当前的价格
+     * @param tagName
+     * @return
+     */
     public static Map<String, Double> getCoinPrices(String tagName){
         HashOperations<String, String, Double> hashOps = template.opsForHash();
         Map<String, Double> prices = hashOps.entries(tagName);
         return new HashMap<>(prices);
+    }
+
+    /**
+     * 更新用户对某个币投资后的数量
+     * @param coinName
+     * @param userId
+     * @param amount
+     */
+    public synchronized static Map<String, Object>  investCoin(String coinName, String userId, Double amount){
+        HashOperations<String, String, Double> hashOps = template.opsForHash();
+        Map<String, Object> res = new HashMap<>();
+        String status = "fail";
+        try{
+            // 查询池子总数 更新池子的总量
+            Double curr_amount = hashOps.get("all_investment_pool", coinName);
+            hashOps.put("all_investment_pool", coinName, curr_amount + amount);
+
+            // 查询对应币种用户是否有投资，如果有则更新，没有则添加
+            Double user_invest = hashOps.get("investment_" + coinName, userId);
+            hashOps.put("investment_" + coinName, userId, user_invest + amount);
+            res.put("balance", user_invest + amount);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        res.put("status", status);
+        return res;
+    }
+
+    /**
+     * 从资金池取出投资
+     * @param coinName
+     * @param userId
+     * @param amount
+     * @return
+     */
+    public synchronized static Map<String, Object> withdrawCoin(String coinName, String userId, Double amount){
+        HashOperations<String, String, Double> hashOps = template.opsForHash();
+        Map<String, Object> res = new HashMap<>();
+        String status = "fail";
+        try {
+            // 先查看用户是否还有投资余额
+            Double user_invest = hashOps.get("investment_" + coinName, userId);
+            if(user_invest != null && amount <= user_invest){
+                hashOps.put("investment_" + coinName, userId, user_invest - amount);
+                status = "success";
+            }else{
+                status = "fail";
+            }
+
+            // 更新池子
+            Double curr_amount = hashOps.get("all_investment_pool", coinName);
+            if(curr_amount != null && curr_amount <= amount){
+                status = "fail";
+            }else{
+                hashOps.put("all_investment_pool", coinName, curr_amount - amount);
+                res.put("balance", curr_amount - amount);
+                status = "success";
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        res.put("status", status);
+        return res;
     }
 }

@@ -6,7 +6,7 @@ public interface WalletService {
      * @param userId    查询用户的id
      * @param currencyName  用户要查询的代币的名字
      */
-    double queryBalance(String userId, String currencyName);
+    Double queryBalance(String userId, String currencyName);
 
     /**
      * cur1 -> cur2
