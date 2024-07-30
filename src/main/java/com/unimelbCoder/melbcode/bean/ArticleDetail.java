@@ -8,16 +8,18 @@ public class ArticleDetail {
     private int article_id;
     private int version;
     private String content;
+    private int ref_loc;
     private int deleted;
     private Timestamp create_time;
     private Timestamp update_time;
 
-    public ArticleDetail(int id, int article_id, int version, String content, int deleted,
+    public ArticleDetail(int id, int article_id, int version, String content, int ref_loc, int deleted,
                          Timestamp create_time, Timestamp update_time) {
         this.id = id;
         this.article_id = article_id;
         this.version = version;
         this.content = content;
+        this.ref_loc = ref_loc;
         this.deleted = deleted;
         this.create_time = create_time;
         this.update_time = update_time;
@@ -55,6 +57,14 @@ public class ArticleDetail {
         this.content = content;
     }
 
+    public int getRef_loc() {
+        return ref_loc;
+    }
+
+    public void setRef_loc(int ref_loc) {
+        this.ref_loc = ref_loc;
+    }
+
     public int getDeleted() {
         return deleted;
     }
@@ -86,6 +96,7 @@ public class ArticleDetail {
                 ", article id='" + this.article_id + '\'' +
                 ", version='" + this.version + '\'' +
                 ", content='" + this.content + '\'' +
+                ", ref_loc='" + this.ref_loc + '\'' +
                 ", deleted=" + this.deleted + '\'' +
                 ", create time=" + this.create_time + '\'' +
                 ", update time=" + this.update_time + '\'' +

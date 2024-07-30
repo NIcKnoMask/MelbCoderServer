@@ -18,4 +18,13 @@
         INSERT INTO article (user_id, article_type, title, short_title, category_id, public_status, deleted)
         VALUES (#{user_id}, #{article_type}, #{title}, #{short_title}, #{category_id}, 0, 0);
     </insert>
+
+    <select id="getArticlesByIds" resultType="com.unimelbCoder.melbcode.bean.Article">
+        SELECT *
+        FROM article
+        WHERE id IN
+        <foreach item="id" collection="idsList" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

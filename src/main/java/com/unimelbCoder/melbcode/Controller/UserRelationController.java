@@ -5,13 +5,9 @@ import com.alibaba.fastjson.JSON;
 import com.unimelbCoder.melbcode.models.dao.UserRelationDao;
 import com.unimelbCoder.melbcode.models.dto.UserRelationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @RestController
 public class UserRelationController {
@@ -58,6 +54,31 @@ public class UserRelationController {
         Long followCounts = userFollowsCount(req.getMainUserId());
         res.put("flag", flag);
         res.put("data", followCounts);
+        return JSON.toJSONString(res);
+    }
+
+    @GetMapping("/relation/{targets}")
+    public String hasFollow(@PathVariable String targets){
+        String[] tgs = targets.split(":");
+        boolean relation = false;
+        boolean isSelf = false;
+        String flag = "error";
+        if(!tgs[1].equals("") && !tgs[0].equals("")){
+            if(tgs[1] == tgs[0]){
+                isSelf = true;
+                relation = true;
+            }else{
+                relation = userRelation.hasRelation(tgs[0], tgs[1]);
+            }
+            flag = "ok";
+        }
+        Map<String, Object> res = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
+        data.put("relation", relation);
+        data.put("isSelf", isSelf);
+
+        res.put("flag", flag);
+        res.put("data", data);
         return JSON.toJSONString(res);
     }
 

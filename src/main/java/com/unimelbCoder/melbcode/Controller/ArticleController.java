@@ -1,10 +1,13 @@
 package com.unimelbCoder.melbcode.Controller;
 
+import cn.hutool.core.annotation.Link;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
 import com.unimelbCoder.melbcode.Service.Article.ArticleService;
+import com.unimelbCoder.melbcode.Service.Article.Impl.FanoutService;
 import com.unimelbCoder.melbcode.Service.Comment.CommentService;
+import com.unimelbCoder.melbcode.Service.User.Impl.UserServiceImpl;
 import com.unimelbCoder.melbcode.bean.Article;
 import com.unimelbCoder.melbcode.bean.ArticleDetail;
 import com.unimelbCoder.melbcode.bean.Comment;
@@ -14,6 +17,7 @@ import com.unimelbCoder.melbcode.models.dao.ArticleDao;
 import com.unimelbCoder.melbcode.models.dao.ArticleDetailDao;
 import com.unimelbCoder.melbcode.models.dao.CommentDao;
 import com.unimelbCoder.melbcode.models.dao.UserDao;
+import com.unimelbCoder.melbcode.models.dto.SimpleUserInfoDTO;
 import com.unimelbCoder.melbcode.models.dto.article.ArticleDTO;
 import com.unimelbCoder.melbcode.models.dto.comment.TopCommentDTO;
 import com.unimelbCoder.melbcode.models.enums.NotifyTypeEnum;
@@ -25,8 +29,12 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.web.bind.annotation.*;
+import java.lang.reflect.Field;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -59,6 +67,15 @@ public class ArticleController {
 
     @Autowired
     ArticleService articleService;
+
+    @Autowired
+    FanoutService fanoutService;
+
+    @Autowired
+    UserServiceImpl userService;
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
 
     @RequestMapping("/createArticle")
     public String createArticle(@RequestBody Map<String, Object> map,
@@ -116,6 +133,9 @@ public class ArticleController {
         //活跃度事件发布
         processAfterCreateArticle(userInfo.getId());
 
+        //触发fanout 更新其粉丝的timeline
+        fanoutService.articleToTimeline(curArticle.getId(), userInfo.getId());
+
         return "ok";
     }
 
@@ -167,34 +187,7 @@ public class ArticleController {
             }
 
         }
-
         res.put("flag", flag);
-
-        return JSON.toJSONString(res);
-    }
-
-    @RequestMapping("/allArticle")
-    public String queryAllArticle() {
-        HashMap<String, Object> res = new HashMap<>();
-        HashMap<String, Object> articleData = new HashMap<>();
-        HashMap<String, Object> userData = new HashMap<>();
-        int count = 1;
-
-        /**
-         * 这段代码后需要修改，按照热度等排序，暂时硬编码
-         */
-        for (int i = 11; i < 14; i++) {
-            Article article = articleDao.getArticleById(i);
-            User user = userDao.getUserByName(article.getUser_id());
-            System.out.println("user: " + user);
-            articleData.put("article" + count, article);
-            userData.put("user" + count, user);
-            count++;
-        }
-
-        res.put("articleData", articleData);
-        res.put("userData", userData);
-
         return JSON.toJSONString(res);
     }
 
@@ -203,33 +196,59 @@ public class ArticleController {
                                @RequestHeader(name = "Authorization", required = false) String token) {
 
         String currentUserId;
+        System.out.println(jwtUtils.isTokenExpired(token));
         // 如果token是空的，或者token已经过期了，就重新login
-        if (token == null || jwtUtils.isTokenExpired(token)) {
+        if (token == null) {
             currentUserId = null;
         }
         else {
             User userInfo = jwtUtils.getUserInfoFromToken(token, User.class);
             currentUserId = userInfo.getId();
+            System.out.println(currentUserId);
+            // 更新用户历史记录
+            userService.userReadHistory(currentUserId, id.intValue());
+        }
+        ArticleDTO article = new ArticleDTO();
+        List<TopCommentDTO> topComments = commentService.getArticleComments(id, currentUserId);
+
+        // 做二级缓存策略
+        // 先从缓存寻找文章
+        Map<String, Object> cacheArticle = RedisClient.getArticle("hotArticle:" + id);
+        if(cacheArticle == null){
+            // 从数据库找文章 并存入缓存
+            article = articleService.queryFullArticleInfo(id.intValue(), currentUserId);
+            cacheArticle = new HashMap<>();
+            // 利用反射 从class获取article的类信息
+            try{
+                Class<?> clazz = article.getClass();
+                for (Field field : clazz.getDeclaredFields()) {
+                    field.setAccessible(true); // You might need to set accessible to true depending on the visibility of the fields
+                    Object value = field.get(article);
+                    cacheArticle.put(field.getName(), convertToString(value));
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            // 存入redis中
+            RedisClient.saveArticle("article_" + id, cacheArticle);
+        }else{
+            RedisClient.updateExpire("article_" + id);
         }
 
         HashMap<String, Object> res = new HashMap<>();
 
-//        Article article = articleDao.getArticleById(id.intValue());
-        ArticleDTO article = articleService.queryFullArticleInfo(id.intValue(), currentUserId);
-//        ArticleDetail articleDetail = articleDetailDao.getArticleDetailByIdx(id.intValue(), 0);
-        List<TopCommentDTO> topComments = commentService.getArticleComments(id, currentUserId);
-
-        User user = userDao.getUserByName(article.getAuthorId());
+        User user = userService.queryUserFullInfo(cacheArticle.get("authorId").toString());
 
         String flag = "error";
-        if (article != null && user != null) {
-            res.put("article", article);
-            res.put("articleDetail", article.getContent());
-            res.put("user", user);
+        if (user != null) {
+            res.put("article", cacheArticle);
+            res.put("articleDetail", cacheArticle.get("content"));
+            res.put("username", user.getUsername());
+            res.put("userId", user.getId());
             res.put("topComment", topComments);
+            res.put("ref_location", cacheArticle.get("ref_loc"));
             flag = "ok";
         }
-
         res.put("flag", flag);
 
         return JSON.toJSONString(res);
@@ -298,4 +317,75 @@ public class ArticleController {
         return article;
     }
 
+    /**
+     * 登录后的用户获取主页按时间线的文章
+     * @param id user id
+     * @return 40+ articles list as data
+     */
+    @GetMapping("/home/{id}")
+    public String getLatestHomeArticles(@PathVariable String id){
+        String key = "timeline_" + id;
+        Set<ZSetOperations.TypedTuple<String>> followArticleList = RedisClient.getSortedSetMembers(key, 0, 20);
+
+        String hotKey = "hot_articles";
+        Set<ZSetOperations.TypedTuple<String>> hotArticleList = RedisClient.getSortedSetMembers(hotKey,
+                0, 40 - followArticleList.size());
+        System.out.println(key + ", article list length: " + followArticleList.size());
+        // 给Id排序
+        Queue<int[]> queue = new PriorityQueue<>((a, b) -> {
+            return b[1] - a[1];
+        });
+        for(ZSetOperations.TypedTuple<String> s: followArticleList){
+            int articleId = Integer.parseInt(s.getValue());
+            int score = (int)s.getScore().doubleValue();
+            queue.offer(new int[]{articleId, score});
+        }
+
+        for(ZSetOperations.TypedTuple<String> s: hotArticleList){
+            int articleId = Integer.parseInt(s.getValue());
+            int score = (int)s.getScore().doubleValue();
+            queue.offer(new int[]{articleId, score});
+        }
+
+        // 获取文章的标题和简介，返回给前端
+        List<Integer> articleIdList = new LinkedList<>();
+        while(!queue.isEmpty()){
+            articleIdList.add(queue.poll()[0]);
+        }
+
+        for(Integer artId: articleIdList){
+            System.out.println("article: " + artId);
+        }
+
+        List<Article> articleList = new LinkedList<>();
+        if(articleIdList.size() != 0){
+            articleList = articleDao.getArticlesByIds(articleIdList);
+        }
+
+        HashMap<String, Object> res = new HashMap<>();
+        res.put("flag", "ok");
+        res.put("data", articleList);
+        return JSON.toJSONString(res);
+    }
+
+
+    public static String convertToString(Object value){
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Boolean) {
+            return value.toString(); // Directly convert Boolean to "true" or "false"
+        }
+        if (value instanceof Timestamp) {
+            return ((Timestamp) value).toInstant().toString(); // Convert Timestamp to string
+        }
+        if (value instanceof Integer || value instanceof String) {
+            return value.toString(); // Direct conversion for Integer and String
+        }
+        try {
+            return objectMapper.writeValueAsString(value);  // Convert complex objects to JSON string
+        } catch (Exception e) {
+            throw new RuntimeException("Error during string conversion", e);
+        }
+    }
 }

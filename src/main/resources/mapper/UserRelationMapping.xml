@@ -3,8 +3,8 @@
         "http//mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.unimelbCoder.melbcode.models.dao.UserRelationDao">
     <insert id="followUser" parameterType="com.unimelbCoder.melbcode.models.dto.UserRelationDTO">
-        INSERT INTO user_relation (mainUserName, followUserId, followState)
-        VALUES (#{mainUserName}, #{followUserId}, 1)
+        INSERT INTO user_relation (mainUser, followUserId, followState)
+        VALUES (#{mainUserId}, #{followUserId}, 1)
     </insert>
 
     <update id="unFollowUser">
@@ -30,5 +30,10 @@
     <select id="hasRelation" resultType="boolean">
         SELECT COUNT(*) > 0 FROM user_relation WHERE
         mainUser=#{mainUser} AND followUserId=#{followUserId}
+    </select>
+
+    <select id="getFans">
+        SELECT `mainUser` FROM user_relation WHERE
+        followUserId=#{userId} AND followState=1
     </select>
 </mapper>

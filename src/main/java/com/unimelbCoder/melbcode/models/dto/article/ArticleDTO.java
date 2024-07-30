@@ -40,6 +40,11 @@ public class ArticleDTO {
     private String content;
 
     /**
+     * 关联定位的id
+     */
+    private int ref_loc;
+
+    /**
      * 发布状态：0-未发布，1-已发布
      */
     private Integer publicStatus;

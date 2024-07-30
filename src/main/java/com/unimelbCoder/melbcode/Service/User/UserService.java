@@ -1,5 +1,6 @@
 package com.unimelbCoder.melbcode.Service.User;
 
+import com.unimelbCoder.melbcode.bean.User;
 import com.unimelbCoder.melbcode.models.dao.UserDao;
 import com.unimelbCoder.melbcode.models.dto.SimpleUserInfoDTO;
 
@@ -11,5 +12,10 @@ public interface UserService {
      * @return 返回用户基本信息
      */
     SimpleUserInfoDTO queryUserInfo(String username);
+
+
+    void userReadHistory(String userId, int articleId);
+
+    User queryUserFullInfo(String userId);
 
 }

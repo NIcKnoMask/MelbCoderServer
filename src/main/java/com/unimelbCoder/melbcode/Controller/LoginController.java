@@ -34,17 +34,19 @@ public class LoginController {
         String flag = "error";
         HashMap<String, Object> res = new HashMap<>();
         String token = null;
-
+        System.out.println("now login");
         if(us != null){
             flag = "ok";
             token = jwtUtils.generateToken(us);
-
+            jwtUtils.refreshToken(token);
+            System.out.println("got token");
             // set redis
             System.out.println(redisTemplate);
-            redisTemplate.opsForValue().set(us.getUsername(), token, 10, TimeUnit.MINUTES);
+            redisTemplate.opsForValue().set(us.getUsername(), token, 1000, TimeUnit.MINUTES);
             res.put("un", us.getId());
             res.put("data", token);
             processAfterLogin(us.getId());
+            System.out.println("got data");
         }
         res.put("flag", flag);
         return JSON.toJSONString(res);

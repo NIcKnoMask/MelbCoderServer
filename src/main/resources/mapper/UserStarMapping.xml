@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+        "http//mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unimelbCoder.melbcode.models.dao.UserStarDao">
+    <insert id="addStar">
+        INSERT INTO user_star (user_id, object_id, star_date, type)
+        VALUES (#{user_id}, #{object_id}, #{date}, #{type})
+    </insert>
+
+    <delete id="deleteStar">
+        DELETE FROM user_star
+        WHERE user_id = #{user_id} AND object_id = #{object_id}
+                        and star_date = #{date} and type = #{type}
+
+    </delete>
+
+    <select id="getStarArticle" resultType="com.unimelbCoder.melbcode.bean.Article">
+        SELECT t2.*, star_date
+        FROM user_star t1
+        LEFT JOIN article t2
+        ON(t1.object_id = t2.id)
+        WHERE t1.user_id = #{user_id} and t1.type = '1'
+    </select>
+
+    <select id="getStarLocations" resultType="map">
+        SELECT t2.*, star_date
+        FROM user_star t1
+        LEFT JOIN locations t2
+        ON(t1.object_id = t2.id)
+        WHERE t1.user_id = #{user_id} and t1.type = '2'
+    </select>
+
+    <select id="getStarLocationByDate" resultType="com.unimelbCoder.melbcode.bean.Location">
+        SELECT t2.*, star_date
+        FROM user_star t1
+        LEFT JOIN locations t2
+        ON(t1.object_id = t2.id)
+        WHERE t1.user_id = #{user_id} and t1.star_date = #{date} and t1.type = '2'
+    </select>
+
+    <select id="hadStar" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM user_star
+            WHERE user_id = #{user_id} AND object_id = #{object_id} AND type = 2
+        ) AS is_exists;
+    </select>
+
+</mapper>

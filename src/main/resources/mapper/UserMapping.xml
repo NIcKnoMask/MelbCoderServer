@@ -4,7 +4,7 @@
 <mapper namespace="com.unimelbCoder.melbcode.models.dao.UserDao">
     <select id="getUserByMessage" resultType="com.unimelbCoder.melbcode.bean.User">
         SELECT * FROM users WHERE
-        id=#{username} AND password=#{password}
+        username=#{username} AND password=#{password}
     </select>
 
     <select id="getUserByName" resultType="com.unimelbCoder.melbcode.bean.User">
@@ -19,4 +19,10 @@
     <select id="countByUsername" resultType="int">
         SELECT COUNT(*) FROM users WHERE username=#{username}
     </select>
+
+    <insert id="addReadingHistory" parameterType="map">
+        INSERT INTO reading_history (user_id, article_id, visited_count)
+        VALUES (#{userId}, #{articleId}, 1)
+        ON DUPLICATE KEY UPDATE visited_count = visited_count + 1;
+    </insert>
 </mapper>

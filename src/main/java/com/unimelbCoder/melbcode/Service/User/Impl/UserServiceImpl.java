@@ -18,4 +18,15 @@ public class UserServiceImpl implements UserService {
         User userInfo = userDao.getUserByName(username);
         return UserSimplify.toSimpleUserInfo(userInfo);
     }
+
+    @Override
+    public void userReadHistory(String userId, int articleId){
+        System.out.println("adding history");
+        userDao.addReadingHistory(userId, articleId);
+    }
+
+    @Override
+    public User queryUserFullInfo(String userId){
+        return userDao.getUserByName(userId);
+    }
 }

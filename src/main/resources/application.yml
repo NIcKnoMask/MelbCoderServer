@@ -3,9 +3,9 @@ spring:
   datasource:
     # MySql配置
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/unimelbcoder?useUnicode=true&characterEncoding=utf8&SSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/unimelbcod er?useUnicode=true&characterEncoding=utf8&SSL=false&serverTimezone=UTC
     username: root
-    password: Tgy998899880
+    password: root666
   data:
     redis:
       host: localhost

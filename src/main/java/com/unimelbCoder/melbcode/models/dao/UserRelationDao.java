@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface UserRelationDao {
-    public void followUser(@Param("mainUser") String mainUser, @Param("followUserId") String followUserId);
+    public void followUser(@Param("mainUserId") String mainUserId, @Param("followUserId") String followUserId);
 
     public void unFollowUser(@Param("mainUser") String mainUser, @Param("followUserId") String followUserId);
 
@@ -19,4 +19,6 @@ public interface UserRelationDao {
     public List<UserRelationDTO> listUserFollows(@Param("mainUser") String mainUser);
 
     public List<UserRelationDTO> queryUserFans(@Param("followUserId") String followUserId);
+
+    public List<String> getFans(@Param("userId") String userId);
 }

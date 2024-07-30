@@ -15,4 +15,5 @@ public interface UserDao {
                            @Param("introduction") String introduction);
     public int countByUsername(@Param("username") String username);
 
+    public void addReadingHistory(@Param("userId") String userId, @Param("articleId") Integer articleId);
 }

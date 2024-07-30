@@ -77,6 +77,12 @@ public class RedisClient{
 
     public static Set<TypedTuple<String>> getSortedSetMembers(String key, long start, long end) {
         ZSetOperations<String, String> zSetOps = template.opsForZSet();
+        try{
+            long len = template.opsForZSet().zCard(key);
+            end = end > len? len: end;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return zSetOps.rangeWithScores(key, start, end);
     }
 
@@ -90,6 +96,32 @@ public class RedisClient{
         // Check if the member exists in the sorted set
         Double score = zSetOps.score(key, member);
         return score != null;
+    }
+
+    public static Double incrementScoreByOne(String key, String member){
+        ZSetOperations<String, String> zSetOps = template.opsForZSet();
+        return zSetOps.incrementScore(key, member, 1.0);
+    }
+
+    /**
+     * 通用函数 查找是否存在这个hash
+     * @param key keyname
+     * @return 如果存在 则返回hash; 否则返回null
+     */
+    public static Map<String, Object> getArticle(String key){
+        HashOperations<String, String, Object> hashOperations = template.opsForHash();
+        return template.hasKey(key)? hashOperations.entries(key): null;
+    }
+
+    public static void saveArticle(String key, Map<String, Object> data){
+        HashOperations<String, String, Object> hashOperations = template.opsForHash();
+        hashOperations.putAll(key, data);
+        // 热点文章缓存一个小时过期
+        template.expire(key, 1, TimeUnit.HOURS);
+    }
+
+    public static void updateExpire(String key){
+        template.expire(key, 1, TimeUnit.HOURS);
     }
 
     /**

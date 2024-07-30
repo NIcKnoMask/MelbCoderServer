@@ -12,11 +12,13 @@ import com.unimelbCoder.melbcode.models.dao.ArticleDetailDao;
 import com.unimelbCoder.melbcode.models.dto.article.ArticleDTO;
 import com.unimelbCoder.melbcode.models.enums.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
 @Service
+@Component
 public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
@@ -93,6 +95,7 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleDTO dto = ArticleConverter.toDto(article);
         ArticleDetail detail = articleDetailDao.getArticleDetailByIdx(articleId, 0);
         dto.setContent(detail.getContent());
+        dto.setRef_loc(detail.getRef_loc());
 
         return dto;
     }
